@@ -1,0 +1,250 @@
+<GitHubからの取得>
+・https://github.com/int71/Arduino_i71.git
+・緑色のアイコン「＜＞ Code ▼」で「Download ZIP」を選択
+・「Arduino_i71-main.zip」を展開してディレクトリ「Arduino_i71-main」以下を適当にコピー
+
+<Arduino IDEインストーラ取得>
+・https://www.filehorse.com/download-arduino/
+  画面上「Old Versions」を選択
+・https://www.filehorse.com/download-arduino/old-versions/
+  「Arduino 1.x.x」系での最新を「Download」
+
+<インストール>
+・「arduino-1.x.x-windows.exe」
+  ・Arduino Setup: Installation Options
+    ■Install Arduino software
+    ■Install USB driver
+    □Create Start Menu shortcut
+    □Create Desktop shortcut
+    ■Associate .ino files
+・「[ダウンロード場所]/(Resource)/lib/theme/theme.txt」を「C:/Program Files (x86)/Arduino/lib/theme/」にコピー
+・「[ダウンロード場所]/(Resource)/lib/theme/syntax/default.xml」を「C:/Program Files (x86)/Arduino/lib/theme/syntax/」にコピー
+・「[ダウンロード場所]/(Resource)/hardware/arduino/avr/bootloaders/null.hex」を「C:/Program Files (x86)/Arduino/hardware/arduino/avr/bootloaders/」にコピー
+・一旦起動する
+  ・「ファイル->環境設定」
+    スケッチブックの保存場所:[ダウンロード場所]/Project
+    追加のボードマネージャのURL: https://raw.githubusercontent.com/sparkfun/Arduino_Boards/master/IDE_Board_Manager/package_sparkfun_index.json
+    □起動時に最新バージョンの有無をチェックする
+    「OK」
+  ・「ツール->書き込み装置->USBasp」
+  ・「ツール->ライブラリを管理」
+    ・「USB Host Shield Library 2.0」をインストール
+      2024/03/02時点の最新が「バージョン1.6.2」で、「整数71コンバータ」使用実績あり。
+      バックアップしておきたいなら「[ダウンロード場所]/Project/libraries/USB_Host_Shield_Library_2.0」を。
+    ・「閉じる」
+  ・「ツール->ボード->ボードマネージャ」
+    ・「SparkFun AVR Boards」をインストール
+      2024/03/02時点の最新が「バージョン1.1.13」で、「整数71コンバータ」使用実績あり。
+      バックアップしておきたいなら「C:/Users/[アカウント名]/AppData/Local/Arduino15/packages/SparkFun」だと思いますけど、
+      これの復元だけではボード選択できない模様なので、もしやるなら「Arduino15」以下すべてをバックアップしましょう。
+    ・「閉じる」
+  ・終了する
+・「C:/Users/[アカウント名]/AppData/Local/Arduino15/preferences.txt」をエディタで開く
+--------ここから--------
+editor.font=Migu 1M,plain,15
+editor.tabs.expand=false
+editor.tabs.size=4
+--------ここまで--------
+・「C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino」を「arduino.org」にrename
+・「C:/Program Files (x86)/Arduino/hardware/arduino/avr/boards.txt」のプロパティを開く
+  ボード毎に「フルコントロール」用の定義を追加しますが、コンバータの主役たる「Pro Micro」はまだ出てきません。
+  スタータセットの「Arduino Mega」と高精度ネジコンで使った「Arduino Pro Mini」用の定義です。まあ、やっときましょう。
+  ポイントは下記。
+
+  ・ブートローダイメージが空っぽの「null.hex」
+  ・「upload.maximum_size」を最大に
+    ブートローダ領域を確保しないので、ボードとして持つメモリすべてがユーザ領域である、という意味。
+  ・「bootloader.high_fuses」の「BOOTRST」ビット(0)を「1(リセットベクタアドレスが$0000)」
+    ついでに「BOOTSZ0」ビット(1)と「BOOTSZ1」ビット(2)も両方1に。
+    意味的にはブートローダ領域サイズ最小。
+
+  そして権限が厳密に設定されてるんで、編集の前に一時変更。
+
+  ・「セキュリティ」タブ
+  ・「編集(E)...」
+    ・「グループ名またはユーザー名(G):」を「Users(xxx\Users)」
+    ・「フルコントロール」をチェック
+    ・「OK」
+  ・「OK」
+・「C:\Program Files (x86)\Arduino\hardware\arduino\avr\boards.txt」を開く
+  ・Arduino Mega
+
+--------ここから--------
+## Arduino Mega w/ ATmega2560 full control
+## -------------------------
+mega.menu.cpu.atmega2560f=ATmega2560 (Mega 2560 full control)
+
+mega.menu.cpu.atmega2560f.upload.protocol=wiring
+mega.menu.cpu.atmega2560f.upload.maximum_size=262144
+mega.menu.cpu.atmega2560f.upload.speed=115200
+
+mega.menu.cpu.atmega2560f.bootloader.high_fuses=0xDF
+mega.menu.cpu.atmega2560f.bootloader.extended_fuses=0xFD
+mega.menu.cpu.atmega2560f.bootloader.file=null.hex
+
+mega.menu.cpu.atmega2560f.build.mcu=atmega2560
+mega.menu.cpu.atmega2560f.build.board=AVR_MEGA2560
+--------ここまで--------
+
+  ・Arduino Pro/Pro Mini(5V/16MHz)
+
+--------ここから--------
+## Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega328P full control
+## --------------------------------------------------
+pro.menu.cpu.16MHzatmega328f=ATmega328P (5V, 16 MHz full control)
+
+pro.menu.cpu.16MHzatmega328f.upload.maximum_size=32768
+pro.menu.cpu.16MHzatmega328f.upload.maximum_data_size=2048
+pro.menu.cpu.16MHzatmega328f.upload.speed=57600
+
+pro.menu.cpu.16MHzatmega328f.bootloader.low_fuses=0xFF
+pro.menu.cpu.16MHzatmega328f.bootloader.high_fuses=0xDF
+pro.menu.cpu.16MHzatmega328f.bootloader.extended_fuses=0xFD
+pro.menu.cpu.16MHzatmega328f.bootloader.file=null.hex
+
+pro.menu.cpu.16MHzatmega328f.build.mcu=atmega328p
+pro.menu.cpu.16MHzatmega328f.build.f_cpu=16000000L
+--------ここまで--------
+
+  ・Arduino Pro/Pro Mini(3.3V/8MHz)
+
+--------ここから--------
+## Arduino Pro or Pro Mini (3.3V, 8 MHz) w/ ATmega328P full control
+## ---------------------------------------------------
+pro.menu.cpu.8MHzatmega328f=ATmega328P (3.3V, 8 MHz full control)
+
+pro.menu.cpu.8MHzatmega328f.upload.maximum_size=32768
+pro.menu.cpu.8MHzatmega328f.upload.maximum_data_size=2048
+pro.menu.cpu.8MHzatmega328f.upload.speed=57600
+
+pro.menu.cpu.8MHzatmega328f.bootloader.low_fuses=0xFF
+pro.menu.cpu.8MHzatmega328f.bootloader.high_fuses=0xDF
+pro.menu.cpu.8MHzatmega328f.bootloader.extended_fuses=0xFD
+pro.menu.cpu.8MHzatmega328f.bootloader.file=null.hex
+
+pro.menu.cpu.8MHzatmega328f.build.mcu=atmega328p
+pro.menu.cpu.8MHzatmega328f.build.f_cpu=8000000L
+--------ここまで--------
+
+・「C:/Program Files (x86)/Arduino/hardware/arduino/avr/boards.txt」のプロパティを開く
+  ・「セキュリティ」タブ
+  ・「編集(E)...」
+    ・「グループ名またはユーザー名(G):」を「Users(xxx\Users)」
+    ・全部チェックを外す
+    ・「OK」
+  ・「OK」
+
+・「C:\Users\[アカウント名]\AppData\Local\Arduino15\packages\SparkFun\hardware\avr\1.1.13\boards.txt」を開く
+  「Pro Micro」向けに「フルコントロール」用の定義を追加します。こちらは権限設定不要。
+  ただ、「ベースと差分」という定義のされ方をしてるんでベース定義「Pro Micro」以下全体を書き換えます。
+
+--------ここから--------
+################################################################################
+################################## Pro Micro ###################################
+################################################################################
+promicro.name=SparkFun Pro Micro
+
+promicro.upload.tool=avrdude
+promicro.upload.protocol=avr109
+promicro.upload.disable_flushing=true
+promicro.upload.use_1200bps_touch=true
+promicro.upload.wait_for_upload_port=true
+
+promicro.bootloader.tool=avrdude
+promicro.bootloader.unlock_bits=0x3F
+promicro.bootloader.lock_bits=0x2F
+
+promicro.build.board=AVR_PROMICRO
+promicro.build.core=arduino:arduino
+promicro.build.variant=promicro
+promicro.build.mcu=atmega32u4
+promicro.build.usb_product="SparkFun Pro Micro"
+promicro.build.vid=0x1b4f
+promicro.build.extra_flags={build.usb_flags}
+
+######################### Pro Micro 3.3V / 8MHz ################################
+promicro.menu.cpu.8MHzatmega32U4=ATmega32U4 (3.3V, 8 MHz)
+
+promicro.menu.cpu.8MHzatmega32U4.upload.maximum_size=28672
+promicro.menu.cpu.8MHzatmega32U4.upload.maximum_data_size=2560
+promicro.menu.cpu.8MHzatmega32U4.upload.speed=57600
+
+promicro.menu.cpu.8MHzatmega32U4.build.pid.0=0x9203
+promicro.menu.cpu.8MHzatmega32U4.build.pid.1=0x9204
+promicro.menu.cpu.8MHzatmega32U4.build.pid=0x9204
+promicro.menu.cpu.8MHzatmega32U4.build.f_cpu=8000000L
+
+promicro.menu.cpu.8MHzatmega32U4.bootloader.low_fuses=0xFF
+promicro.menu.cpu.8MHzatmega32U4.bootloader.high_fuses=0xD8
+promicro.menu.cpu.8MHzatmega32U4.bootloader.extended_fuses=0xFE
+promicro.menu.cpu.8MHzatmega32U4.bootloader.file=caterina/Caterina-promicro8.hex
+
+############################# Pro Micro 5V / 16MHz #############################
+promicro.menu.cpu.16MHzatmega32U4=ATmega32U4 (5V, 16 MHz)
+
+promicro.menu.cpu.16MHzatmega32U4.upload.maximum_size=28672
+promicro.menu.cpu.16MHzatmega32U4.upload.maximum_data_size=2560
+promicro.menu.cpu.16MHzatmega32U4.upload.speed=57600
+
+promicro.menu.cpu.16MHzatmega32U4.build.pid.0=0x9205
+promicro.menu.cpu.16MHzatmega32U4.build.pid.1=0x9206
+promicro.menu.cpu.16MHzatmega32U4.build.pid=0x9206
+promicro.menu.cpu.16MHzatmega32U4.build.f_cpu=16000000L
+
+promicro.menu.cpu.16MHzatmega32U4.bootloader.low_fuses=0xFF
+promicro.menu.cpu.16MHzatmega32U4.bootloader.high_fuses=0xD8
+promicro.menu.cpu.16MHzatmega32U4.bootloader.extended_fuses=0xCB
+promicro.menu.cpu.16MHzatmega32U4.bootloader.file=caterina/Caterina-promicro16.hex
+
+######################### Pro Micro 3.3V / 8MHz full control ################################
+promicro.menu.cpu.8MHzatmega32U4f=ATmega32U4 (3.3V, 8 MHz full control)
+
+promicro.menu.cpu.8MHzatmega32U4f.upload.maximum_size=32768
+promicro.menu.cpu.8MHzatmega32U4f.upload.maximum_data_size=2560
+promicro.menu.cpu.8MHzatmega32U4f.upload.speed=57600
+
+promicro.menu.cpu.8MHzatmega32U4f.build.pid.0=0x9203
+promicro.menu.cpu.8MHzatmega32U4f.build.pid.1=0x9204
+promicro.menu.cpu.8MHzatmega32U4f.build.pid=0x9204
+promicro.menu.cpu.8MHzatmega32U4f.build.f_cpu=8000000L
+
+promicro.menu.cpu.8MHzatmega32U4f.bootloader.low_fuses=0xFF
+promicro.menu.cpu.8MHzatmega32U4f.bootloader.high_fuses=0xDF
+promicro.menu.cpu.8MHzatmega32U4f.bootloader.extended_fuses=0xFE
+promicro.menu.cpu.8MHzatmega32U4f.bootloader.file=null.hex
+
+############################# Pro Micro 5V / 16MHz full control #############################
+promicro.menu.cpu.16MHzatmega32U4f=ATmega32U4 (5V, 16 MHz full control)
+
+promicro.menu.cpu.16MHzatmega32U4f.upload.maximum_size=32768
+promicro.menu.cpu.16MHzatmega32U4f.upload.maximum_data_size=2560
+promicro.menu.cpu.16MHzatmega32U4f.upload.speed=57600
+
+promicro.menu.cpu.16MHzatmega32U4f.build.pid.0=0x9205
+promicro.menu.cpu.16MHzatmega32U4f.build.pid.1=0x9206
+promicro.menu.cpu.16MHzatmega32U4f.build.pid=0x9206
+promicro.menu.cpu.16MHzatmega32U4f.build.f_cpu=16000000L
+
+promicro.menu.cpu.16MHzatmega32U4f.bootloader.low_fuses=0xFF
+promicro.menu.cpu.16MHzatmega32U4f.bootloader.high_fuses=0xDF
+promicro.menu.cpu.16MHzatmega32U4f.bootloader.extended_fuses=0xCB
+promicro.menu.cpu.16MHzatmega32U4f.bootloader.file=null.hex
+--------ここまで--------
+
+・「[ダウンロード場所]/(Resource)/hardware/arduino/avr/bootloaders/null.hex」を「C:/Users/[アカウント名]/AppData/Local/Arduino15/packages/SparkFun/hardware/avr/1.1.13/bootloaders/」にコピー
+・「[ダウンロード場所]/switch_i71.bat」を実行
+・ビルドテスト
+  ・「[ダウンロード場所]/Project/User/ORECON_ALL/ORECON_ALL.ino」を開く
+  ・「ツール->ボード->SparkFun AVR Boards->SparkFun Pro Micro」
+  ・「ツール->プロセッサ->ATmega32U4 (5V, 16 MHz full control)」
+  ・「スケッチ->検証・コンパイル」
+    下記のようなメッセージが。「最大32768バイトのフラッシュメモリ」に注目。
+
+      最大32768バイトのフラッシュメモリのうち、スケッチが20080バイト（61%）を使っています。
+      最大2560バイトのRAMのうち、グローバル変数が663バイト（25%）を使っていて、ローカル変数で1897バイト使うことができます。
+
+<アンインストール>
+・「アプリと機能(F)」でアンインストール
+・下記を削除
+  C:/Users/[アカウント名]/AppData/Local/Arduino15
+  C:/Users/[アカウント名]/Documents/Arduino
