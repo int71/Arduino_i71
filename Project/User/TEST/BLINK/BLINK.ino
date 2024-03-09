@@ -1,7 +1,10 @@
 //	use "switch_org.bat"
 
 void					setup(void){
-    DDRC=0xff;
+	DDRB=0xff;
+	DDRD=0xff;
+	PORTB=0xff;
+	PORTD=0xff;
 	return;
 }
 
@@ -10,10 +13,10 @@ void					loop(void){
 
 	uctemp++;
 	if(uctemp&1){
-	    PORTC=0x00;
+		PORTB=0x00;
 	}else{
-	    PORTC=0x80;
+		PORTB=0x01;
 	}
-    delay(100);
+	delay(100);
 	return;
 }

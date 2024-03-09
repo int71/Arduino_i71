@@ -66,7 +66,7 @@ editor.tabs.size=4
     ・「フルコントロール」をチェック
     ・「OK」
   ・「OK」
-・「C:\Program Files (x86)\Arduino\hardware\arduino\avr\boards.txt」を開く
+・「C:/Program Files (x86)/Arduino/hardware/arduino/avr/boards.txt」を開く
   ・Arduino Mega
 
 --------ここから--------
@@ -134,7 +134,7 @@ pro.menu.cpu.8MHzatmega328f.build.f_cpu=8000000L
     ・「OK」
   ・「OK」
 
-・「C:\Users\[アカウント名]\AppData\Local\Arduino15\packages\SparkFun\hardware\avr\1.1.13\boards.txt」を開く
+・「C:/Users/[アカウント名]/AppData/Local/Arduino15/packages/SparkFun/hardware/avr/1.1.13/boards.txt」を開く
   「Pro Micro」向けに「フルコントロール」用の定義を追加します。こちらは権限設定不要。
   ただ、「ベースと差分」という定義のされ方をしてるんでベース定義「Pro Micro」以下全体を書き換えます。
 
