@@ -1,3 +1,4 @@
+//	use "switch_i71.bat"
 #include				<ofw_driver_serial0.hpp>
 #include				<ofw_driver_ps.hpp>
 using namespace driver;
@@ -8,7 +9,7 @@ BOOL					eRefreshed;
 
 INT						main(VOID){
 	OFW::stNew();
-	SERIAL0::stNew(230400);
+	SERIAL0::stNew(115200);
 	SERIAL0::stPrintClear();
 	psThis.New();
 	idDevicePrevious=PS::IDDevice_None-1;
@@ -34,6 +35,7 @@ INT						main(VOID){
 			show_initializing();
 			break;
 		case PS::IDDevice_NS_Digital:
+		case PS::IDDevice_HS_Digital:
 			if(erefresh)show_digital_base();
 			show_digital();
 			break;
@@ -54,7 +56,7 @@ INT						main(VOID){
 			show_none();
 			break;
 		}
-		OFW::stWait(20);
+		OFW::stWait(1);
 	}
 	return 0;
 }

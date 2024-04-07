@@ -228,7 +228,7 @@ VOID					PS::Main(VOID){
 			stSetHS(TRUE);
 			Read(arbccommand,sizeof(arbccommand));
 			if(readThis.bcCheck==0x5a)idTransition=idTransition+1;
-			else idTransition=IDTransition_NS_Digital;
+			else idTransition=IDTransition_HS_Digital;
 			return;
 		}
 		break;
@@ -244,7 +244,7 @@ VOID					PS::Main(VOID){
 			Read(arbccommand,sizeof(arbccommand));
 			if(readThis.wcID==0x5af3)idTransition=idTransition+1;
 			else if(readThis.wcID==0x5aa5)idTransition=IDTransition_HS_neGconPlus;
-			else idTransition=IDTransition_NS_Digital;
+			else idTransition=IDTransition_HS_Digital;
 			return;
 		}
 		break;
@@ -316,6 +316,17 @@ VOID					PS::Main(VOID){
 				idTransition=IDTransition_HS_DUALSHOCK2;
 				return;
 			}
+		}
+		break;
+	case IDTransition_HS_Digital:
+		{
+			//	READ_DATA
+			//	CMD=01,42,00,00,00
+			//	DAT=--,41,5A,XX,XX
+			idDevice=IDDevice_HS_Digital;
+			stSetHS(TRUE);
+			Read(nullptr,0);
+			if(readThis.wcID==0x5a41)return;
 		}
 		break;
 	case IDTransition_HS_neGconPlus:
