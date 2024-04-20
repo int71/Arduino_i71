@@ -1,0 +1,35 @@
+・NetworkMonitorインストール
+  ・「NM34_x64.exe」普通にインストール
+  ・「NetworkMonitor_Parsers.msi」でパーサーを更新
+  ・起動
+    Microsoft Update Opt-In
+    □Periodically check for updates when Network Monitor starts
+    No
+  ・USBパーサーの追加
+    ・「Tool」->「Options」
+    ・「Parser Profiles」タブ「Windows」を選択し、「Set As Active」
+
+・キャプチャ
+  ・コマンドプロンプトを管理者で開く
+  ・logman start Usbtrace -p Microsoft-Windows-USB-USBPORT -ets -nb 128 640 -bs 128 -o "D:\usbtrace.etl"
+  ・キャプチャしたいUSB装置を接続して操作してみる
+  ・logman stop Usbtrace -ets
+  ・コマンドプロンプト閉じる
+
+・「D:\usbtrace.etl」の確認
+  ・NetworkMonitorを起動
+    ・「Ctrl+O」で「D:\usbtrace.etl」を開く
+    ・表示項目
+      |USB Direction|Time Offset|Protocol Name|USB_Endpoint|USB Is Urb Completion|USB Is Ehci|USB Device Class|USB Urb Status|USB Summary|
+    ・「Network Conversations」で下記を開いて、特定デバイスに絞りますよ
+----------------
+- All Traffic
+  - Other Traffic
+   - NetEvent ActivityID 0
+    - USBPort 
+     - USB Controller: (1d-0 e) PCI bus 0, device 29, function 0 (EHCI)
+        USBPort Port Path: 1,2
+----------------
+    ・何なら「名前を付けて保存」で「xx.cap」を保存する
+      Frame selection:Displayed frames
+      □Record display filter in capture file

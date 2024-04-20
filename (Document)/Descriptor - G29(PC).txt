@@ -1,0 +1,716 @@
+<âêÕ>
+//	0x00
+Pad(U)			00 00 00 00 CB 7D FF FF FF 7F 85 9C
+Pad(R)			02 00 00 00 CB 7D FF FF FF 7F 85 9C
+Pad(D)			04 00 00 00 CB 7D FF FF FF 7F 85 9C
+Pad(L)			06 00 00 00 CB 7D FF FF FF 7F 85 9C
+Button(Å~)		18 00 00 00 F7 7D FF FF FF 7F 85 9C
+Button(Å†)		28 00 00 00 F6 7D FF FF FF 7F 85 9C
+Button(ÅZ)		48 00 00 00 CB 7D FF FF FF 7F 85 9C
+Button(Å¢)		88 00 00 00 F4 7D FF FF FF 7F 85 9C
+//	0x01
+Button(R1)		08 01 00 00 F7 7D FF FF FF 7F 85 9C
+Button(L1)		08 02 00 00 F7 7D FF FF FF 7F 85 9C
+Button(R2)		08 04 00 00 F7 7D FF FF FF 7F 85 9C
+Button(L2)		08 08 00 00 F7 7D FF FF FF 7F 85 9C
+Button(SHARE)	08 10 00 00 F8 7D FF FF FF 7F 85 9C
+Button(OPTION)	08 20 00 00 F8 7D FF FF FF 7F 85 9C
+Button(R3)		08 40 00 00 F8 7D FF FF FF 7F 85 9C
+Button(L3)		08 80 00 00 F8 7D FF FF FF 7F 85 9C
+//	0x02
+Shift(1)		08 00 01 00 F8 7D FF FF FF 37 C3 9C
+Shift(2)		08 00 02 00 F8 7D FF FF FF 3C 3F 9C
+Shift(3)		08 00 04 00 F8 7D FF FF FF 7E C3 9C
+Shift(4)		08 00 08 00 F8 7D FF FF FF 7E 40 9C
+Shift(5)		08 00 10 00 F8 7D FF FF FF BA C3 9C
+Shift(6)		08 00 20 00 F8 7D FF FF FF B6 40 9C
+Shift(R)		08 00 40 00 F8 7D FF FF FF AE 49 9C
+Button(+)		08 00 80 00 F8 7D FF FF FF 7F 85 9C
+//	0x03
+Button(-)		08 00 00 01 F8 7D FF FF FF 7F 85 9C
+Dial(R)			08 00 00 02 F8 7D FF FF FF 7F 85 9C
+Dial(L)			08 00 00 04 F8 7D FF FF FF 7F 85 9C
+Dial(Enter)		08 00 00 08 F8 7D FF FF FF 7F 85 9C
+Button(PS)		08 00 00 10 F8 7D FF FF FF 7F 85 9C
+//	0x04
+Steering(L)		08 00 00 00 00 00 FF FF FF 7F 85 9C
+Steering(R)		08 00 00 00 FF FF FF FF FF 7F 85 9C
+//	0x06
+Pedal(Accel)	08 00 00 00 CB 7D 00 FF FF 7F 85 9C
+Pedal(Brake)	08 00 00 00 CB 7D FF 00 FF 7F 85 9C
+Pedal(Clutch)	08 00 00 00 CB 7D FF FF 00 7F 85 9C
+
+<ç\ë¢ëÃ>
+0x81(EP 1 IN){			//	wMaxPacketSize:0x0010
+	//	0x00
+	BYTE					b4cPad:4;
+	BYTE					eButtonCross:1;
+	BYTE					eButtonSquare:1;
+	BYTE					eButtonCircle:1;
+	BYTE					eButtonTriangle:1;
+	//	0x01
+	BYTE					eButtonR1:1;
+	BYTE					eButtonL1:1;
+	BYTE					eButtonR2:1;
+	BYTE					eButtonL2:1;
+	BYTE					eButtonShare:1;
+	BYTE					eButtonOption:1;
+	BYTE					eButtonR3:1;
+	BYTE					eButtonL3:1;
+	//	0x02
+	BYTE					eShift1:1;
+	BYTE					eShift2:1;
+	BYTE					eShift3:1;
+	BYTE					eShift4:1;
+	BYTE					eShift5:1;
+	BYTE					eShift6:1;
+	BYTE					eShiftR:1;
+	BYTE					eButtonPlus:1;
+	//	0x03
+	BYTE					eButtonMinus:1;
+	BYTE					eDialR:1;
+	BYTE					eDialL:1;
+	BYTE					eDialEnter:1;
+	BYTE					eButtonPS:1;
+	BYTE					b3Reserved0:3;
+	//	0x04
+	WORD					wiSteering;
+	BYTE					biPedalAccel;
+	BYTE					biPedalBrake;
+	//	0x08
+	BYTE					biPedalClutch;
+	BYTE					biShiftKnobX;
+	BYTE					biShiftKnobY;
+	BYTE					bReserved1;
+};
+
+0x01(EP 1 OUT){			//	wMaxPacketSize:0x0040
+	BYTE					arbcFeedback[16];
+}
+
+0x82(EP 2 IN){			//	wMaxPacketSize:0x0014
+	union{
+		BYTE					arbcUnknown[6];
+		BYTE					arbcUnknown[19];
+	}
+}
+In	4.5476747	11 FF 00 1C 04 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5496743	11 FF 00 1C 04 02 39 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5516742	11 FF 00 0C 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5536765	11 FF 03 1C 00 55 20 20 89 00 00 25 00 00 00 00 00 00 00 00 
+In	4.5556734	11 FF 00 0C 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5576736	11 FF 04 2C 0A 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5596741	11 FF 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5616734	11 FF 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5676734	11 FF 03 0C 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5716751	11 FF 04 0C 1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5736762	11 FF 04 1C 47 32 39 20 44 72 69 76 69 6E 67 20 46 6F 72 63 
+In	4.5756740	11 FF 04 1C 65 20 52 61 63 69 6E 67 20 57 68 65 65 6C 00 00 
+In	4.5776736	11 FF 03 1C 00 55 20 20 89 00 00 25 00 00 00 00 00 00 00 00 
+In	4.5816734	11 FF 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5896755	11 FF 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5916738	11 FF 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+In	4.5936728	11 FF 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+
+
+<USB Initialize>
+
+//
+//	COMPATIBLE MODE
+//
+
+Dir.TimeOffset	Proto.	EP	URB	EHC.Cl.	URBSta.	Summary
+--------------------------------------------------------------------
+	2.3667020	USBPort	00		01	00			Endpoint Open
+In	2.3667051	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.3668757	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 0 (0x0)
+       Value_DescriptorType: (1) DEVICE
+       _wIndex: 0 (0x0)
+       wLength: 64 (0x40)
+	----------------
+	DeviceDescriptor
+		bLength					0x12
+		bDescriptorType			0x01		Device
+		bcdUSB					0x0100		1.00
+		bDeviceClass			0x00		Defined at Interface level
+		bDeviceSubClass			0x00
+		bDeviceProtocol			0x00
+		bMaxPacketSize0			0x40
+		idVendor				0x046d		Logitech, Inc.
+		idProduct				0xc260
+		bcdDevice				0x8900
+		iManufacturer			0x01		09 04
+		iProduct				0x02		G29 Driving Force Racing Wheel
+		iSerialNumber			0x00
+		bNumConfigurations		0x01
+	----------------
+	2.3669012	USBPort			01	00			Device Create
+Out	2.3974549	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+Out	2.3976429	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.4103784	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.4106211	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	DeviceDescriptor
+	----------------
+	2.4106481	USBPort			01	00			Device Initialize
+In	2.4109252	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.4111228	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	ConfigurationDescriptor
+		bLength					0x09
+		bDescriptorType			0x02
+		wTotalLength			0x0029
+		bNumInterfaces			0x01
+		bConfigurationValue		0x01
+		iConfiguration			0x00
+		bmAttributes			0x80		Self Power:NO/Remote Wakeup:NO
+		MaxPower				0x64		200 mA
+	InterfaceDescriptor
+		bLength					0x09
+		bDescriptorType			0x04
+		bInterfaceNumber		0x00
+		bAlternateSetting		0x00
+		bNumEndpoints			0x02
+		bInterfaceClass			0x03		Human Interface Device
+		bInterfaceSubClass		0x00		No Subclass
+		bInterfaceProtocol		0x00		None
+		iInterface				0x00
+	HIDDescriptor
+		bLength					0x09
+		bDescriptorType			0x21
+		bcdHID					0x0110
+		bCountryCode			0x00
+		bNumDescriptors			0x01
+		bDescriptorType			0x22
+		wDescriptorLength		0x00a0
+	EndpointDescriptor
+		bLength					0x07
+		bDescriptorType			0x05
+		bEndpointAddress		0x03		EP 3 OUT
+		bmAttributes			0x03		Transfer Type:Interrupt/Synch Type:None/Usage Type:Data
+		wMaxPacketSize			0x0040
+		bInterval				0x05		5ms(200fps)
+	EndpointDescriptor
+		bLength					0x07
+		bDescriptorType			0x05
+		bEndpointAddress		0x84		EP 4 IN
+		bmAttributes			0x03		Transfer Type:Interrupt/Synch Type:None/Usage Type:Data
+		wMaxPacketSize			0x0040
+		bInterval				0x05		5ms(200fps)
+	----------------
+In	2.4118120	USBPort	00		01	00			Dispatch URB_FUNCTION_CONTROL_TRANSFER_EX
+In	2.4119994	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER_EX with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 0 (0x0)
+       Value_DescriptorType: (3) STRING
+       Index_Language: 0 (0x0)
+       wLength: 255 (0xFF)
+      fid_URB_TransferDataLength: 4 (0x4)
+	----------------
+	StringDescriptor
+		bLength					0x04
+		bDescriptorType			0x03
+		bString					0x09 0x04									..
+	----------------
+In	2.4120444	USBPort	00		01	00			Dispatch URB_FUNCTION_CONTROL_TRANSFER_EX
+In	2.4122471	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER_EX with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 2 (0x2)
+       Value_DescriptorType: (3) STRING
+       Index_Language: 1033 (0x409)
+       wLength: 255 (0xFF)
+      fid_URB_TransferDataLength: 62 (0x3E)
+	----------------
+	StringDescriptor
+		bLength					0x3e
+		bDescriptorType			0x03
+		bString					0x47 0x00 0x32 0x00 0x39 0x00 0x20 0x00		G.2.9. .
+								0x44 0x00 0x72 0x00 0x69 0x00 0x76 0x00		D.r.i.v.
+								0x69 0x00 0x6E 0x00 0x67 0x00 0x20 0x00		i.n.g. .
+								0x46 0x00 0x6F 0x00 0x72 0x00 0x63 0x00		F.o.r.c.
+								0x65 0x00 0x20 0x00 0x52 0x00 0x61 0x00		e. .R.a.
+								0x63 0x00 0x69 0x00 0x6E 0x00 0x67 0x00		c.i.n.g.
+								0x20 0x00 0x57 0x00 0x68 0x00 0x65 0x00		 .W.h.e.
+								0x65 0x00 0x6C 0x00							e.l.
+	----------------
+In	2.4145188	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.4147106	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	DeviceDescriptor
+	----------------
+In	2.4147428	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.4149346	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	ConfigurationDescriptor
+	----------------
+In	2.4149734	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.4151869	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	ConfigurationDescriptor
+	InterfaceDescriptor
+	HIDDescriptor
+	EndpointDescriptor
+	EndpointDescriptor
+	----------------
+In	2.4152204	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_STATUS_FROM_DEVICE
+In	2.4154317	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	Data_DeviceStatus:			0x0000
+	----------------
+	2.4155174	USBPort			01	00			Dispatch URB_FUNCTION_SELECT_CONFIGURATION
+Out	2.4155198	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+Out	2.4156806	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER
+	2.4157308	USBPort	03		01	00			Endpoint Open
+	2.4157423	USBPort	84		01	00			Endpoint Open
+Out	2.4189189	USBPort	03		01	00			Dispatch URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER
+Out	2.4215711	USBPort	03	01	01	00	success	Complete URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER
+	2.4260999	USBPort			01	00			Device Removal
+	2.4261034	USBPort	03		01	00			Endpoint Close
+	2.4559424	USBPort	84		01	00			Endpoint Close
+	2.4865685	USBPort	00		01	00			Endpoint Close
+
+//
+//	NATIVE MODE
+//
+
+Dir.TimeOffset	Proto.	EP	URB	EHC.Cl.	URBSta.	Summary
+--------------------------------------------------------------------
+	2.8983734	USBPort	00		01	00			Endpoint Open
+In	2.8983756	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.8986368	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	DeviceDescriptor
+		bLength					0x12
+		bDescriptorType			0x01		Device
+		bcdUSB					0x0200		2.00
+		bDeviceClass			0x00		Defined at Interface level
+		bDeviceSubClass			0x00
+		bDeviceProtocol			0x00
+		bMaxPacketSize0			0x40
+		idVendor				0x046d		Logitech, Inc.
+		idProduct				0xc24f
+		bcdDevice				0x8900
+		iManufacturer			0x01		09 04
+		iProduct				0x02		G29 Driving Force Racing Wheel
+		iSerialNumber			0x00
+		bNumConfigurations		0x01
+	----------------
+	2.8986756	USBPort			01	00			Device Create
+Out	2.9296163	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+Out	2.9298642	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.9424728	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.9427471	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	DeviceDescriptor
+	----------------
+	2.9427741	USBPort			01	00			Device Initialize
+In	2.9430534	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+In	2.9433894	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	ConfigurationDescriptor
+		bLength					0x09
+		bDescriptorType			0x02
+		wTotalLength			0x0042
+		bNumInterfaces			0x02
+		bConfigurationValue		0x01
+		iConfiguration			0x04
+		bmAttributes			0x80		Self Power:NO/Remote Wakeup:NO
+		MaxPower				0x64		200 mA
+	InterfaceDescriptor
+		bLength					0x09
+		bDescriptorType			0x04
+		bInterfaceNumber		0x00		Index_Interface:0
+		bAlternateSetting		0x00
+		bNumEndpoints			0x02
+		bInterfaceClass			0x03		Human Interface Device
+		bInterfaceSubClass		0x00		No Subclass
+		bInterfaceProtocol		0x00		None
+		iInterface				0x00
+	HIDDescriptor
+		bLength					0x09
+		bDescriptorType			0x21
+		bcdHID					0x0111
+		bCountryCode			0x00
+		bNumDescriptors			0x01
+		bDescriptorType			0x22
+		wDescriptorLength		0x007b
+	EndpointDescriptor
+		bLength					0x07
+		bDescriptorType			0x05
+		bEndpointAddress		0x81		EP 1 IN
+		bmAttributes			0x03		Transfer Type:Interrupt/Synch Type:None/Usage Type:Data
+		wMaxPacketSize			0x0010
+		bInterval				0x02		2ms(500fps)
+	EndpointDescriptor
+		bLength					0x07
+		bDescriptorType			0x05
+		bEndpointAddress		0x01		EP 1 OUT
+		bmAttributes			0x03		Transfer Type:Interrupt/Synch Type:None/Usage Type:Data
+		wMaxPacketSize			0x0040
+		bInterval				0x02		2ms(500fps)
+	InterfaceDescriptor
+		bLength					0x09
+		bDescriptorType			0x04
+		bInterfaceNumber		0x01		Index_Interface:1
+		bAlternateSetting		0x00
+		bNumEndpoints			0x01
+		bInterfaceClass			0x03		Human Interface Device
+		bInterfaceSubClass		0x00		No Subclass
+		bInterfaceProtocol		0x00		None
+		iInterface				0x00
+	HIDDescriptor
+		bLength					0x09
+		bDescriptorType			0x21
+		bcdHID					0x0111
+		bCountryCode			0x00
+		bNumDescriptors			0x01
+		bDescriptorType			0x22
+		wDescriptorLength		0x0036
+	EndpointDescriptor
+		bLength					0x07
+		bDescriptorType			0x05
+		bEndpointAddress		0x82		EP 2 IN
+		bmAttributes			0x03		Transfer Type:Interrupt/Synch Type:None/Usage Type:Data
+		wMaxPacketSize			0x0014
+		bInterval				0x02		2ms(500fps)
+	----------------
+In	2.9440733	USBPort	00		01	00			Dispatch URB_FUNCTION_CONTROL_TRANSFER_EX
+In	2.9442499	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER_EX with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 0 (0x0)
+       Value_DescriptorType: (3) STRING
+       Index_Language: 0 (0x0)
+       wLength: 255 (0xFF)
+      fid_URB_TransferDataLength: 4 (0x4)
+	----------------
+	StringDescriptor
+		bLength					0x04
+		bDescriptorType			0x03
+		bString					0x09 0x04									..
+	----------------
+In	2.9442946	USBPort	00		01	00			Dispatch URB_FUNCTION_CONTROL_TRANSFER_EX
+In	2.9444975	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER_EX with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 2 (0x2)
+       Value_DescriptorType: (3) STRING
+       Index_Language: 1033 (0x409)
+       wLength: 255 (0xFF)
+      fid_URB_TransferDataLength: 62 (0x3E)
+	----------------
+	StringDescriptor
+		bLength					0x3e
+		bDescriptorType			0x03
+		bString					0x47 0x00 0x32 0x00 0x39 0x00 0x20 0x00		G.2.9. .
+								0x44 0x00 0x72 0x00 0x69 0x00 0x76 0x00		D.r.i.v.
+								0x69 0x00 0x6E 0x00 0x67 0x00 0x20 0x00		i.n.g. .
+								0x46 0x00 0x6F 0x00 0x72 0x00 0x63 0x00		F.o.r.c.
+								0x65 0x00 0x20 0x00 0x52 0x00 0x61 0x00		e. .R.a.
+								0x63 0x00 0x69 0x00 0x6E 0x00 0x67 0x00		c.i.n.g.
+								0x20 0x00 0x57 0x00 0x68 0x00 0x65 0x00		 .W.h.e.
+								0x65 0x00 0x6C 0x00							e.l.
+	----------------
+In	2.9494102	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9495589	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	DeviceDescriptor
+	----------------
+In	2.9495701	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9496973	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	ConfigurationDescriptor
+	----------------
+In	2.9497444	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9500647	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	ConfigurationDescriptor
+	InterfaceDescriptor
+	HIDDescriptor
+	EndpointDescriptor
+	EndpointDescriptor
+	InterfaceDescriptor
+	HIDDescriptor
+	EndpointDescriptor
+	----------------
+	2.9506878	USBPort			01	00			Dispatch URB_FUNCTION_SELECT_CONFIGURATION
+Out	2.9506906	USBPort	00		01	00			Internal URB_FUNCTION_CONTROL_TRANSFER
+Out	2.9508141	USBPort	00	01	01	00	success	Complete Internal URB_FUNCTION_CONTROL_TRANSFER
+	2.9508674	USBPort	81		01	00			Endpoint Open
+	2.9508786	USBPort	01		01	00			Endpoint Open
+	2.9508895	USBPort	82		01	00			Endpoint Open
+In	2.9511616	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9514334	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 2 (0x2)
+       Value_DescriptorType: (3) STRING
+       Index_Language: 1033 (0x409)
+       wLength: 4 (0x4)
+      fid_URB_TransferDataLength: 4 (0x4)
+	----------------
+	StringDescriptor
+		bLength					0x3e
+		bDescriptorType			0x03
+		bString					0x47 0x00									G.
+	----------------
+In	2.9514614	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9516795	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9543056	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9544303	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G")
+	----------------
+In	2.9544390	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9546789	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+Out	2.9554391	USBPort	00		01	00			Dispatch URB_FUNCTION_CLASS_INTERFACE
+Out	2.9555558	USBPort	00	01	01	00	....	Complete URB_FUNCTION_CONTROL_TRANSFER
+In	2.9555679	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_INTERFACE
+In	2.9559282	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x81
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 0 (0x0)
+       Value_DescriptorType: (34) Unknown
+       Index_Interface: 0 (0x0)	//	0x81(EP 1 IN) 0x01(EP 1 OUT)
+       wLength: 187 (0xBB)
+	----------------
+	Report Descriptor
+		0x05,0x01,				//	Usage Page(Generic Desktop)
+		0x09,0x04,				//	Usage(Joystick)
+		0xa1,0x01,				//	Collection(Application)
+		0x09,0x39,				//		Usage(Hat switch)
+		0x15,0x00,				//		Logical Minimum(0)
+		0x25,0x07,				//		Logical Maximum(7)
+		0x35,0x00,				//		Physical Minimum(0)
+		0x46,0x3b,0x01,			//		Physical Maximum(315)
+		0x65,0x14,				//		Unit(Degrees)
+		0x75,0x04,				//		Report Size(4)
+		0x95,0x01,				//		Report Count(1)
+		0x81,0x42,				//		Input(Variable)
+		0x05,0x09,				//		Usage Page(Button)
+		0x19,0x01,				//		Usage Minimum(1)
+		0x29,0x19,				//		Usage Maximum(25)
+		0x65,0x00,				//		Unit(Default)
+		0x25,0x01,				//		Logical Maximum(1)
+		0x45,0x01,				//		Physical Maximum(1)
+		0x75,0x01,				//		Report Size(1)
+		0x95,0x19,				//		Report Count(25)
+		0x81,0x02,				//		Input(Variable)
+		0x75,0x01,				//		Report Size(1)
+		0x95,0x03,				//		Report Count(3)
+		0x81,0x03,				//		Input(Const,Var,Abs)
+		0x05,0x01,				//		Usage Page(Generic Desktop)
+		0x09,0x30,				//		Usage(X)
+		0x27,0xff,0xff,0x00,0x00,//		Logical Maximum(65535)
+		0x47,0xff,0xff,0x00,0x00,//		Physical Maximum(65535)
+		0x75,0x10,				//		Report Size(16)
+		0x95,0x01,				//		Report Count(1)
+		0x81,0x02,				//		Input(Variable)
+		0x09,0x32,				//		Usage(Z)
+		0x09,0x35,				//		Usage(Rz)
+		0x09,0x31,				//		Usage(Y)
+		0x26,0xff,0x00,			//		Logical Maximum(255)
+		0x46,0xff,0x00,			//		Physical Maximum(255)
+		0x75,0x08,				//		Report Size(8)
+		0x95,0x03,				//		Report Count(3)
+		0x81,0x02,				//		Input(Variable)
+		0x06,0x00,0xff,			//		Usage Page(Vendor-defined)
+		0x09,0x01,				//		Usage(Pointer)
+		0x95,0x02,				//		Report Count(2)
+		0x81,0x02,				//		Input(Variable)
+		0x06,0x00,0xff,			//		Usage Page(Vendor-defined)
+		0x09,0x01,				//		Usage(Pointer)
+		0x95,0x01,				//		Report Count(1)
+		0x81,0x02,				//		Input(Variable)
+		0x06,0x00,0xff,			//		Usage Page(Vendor-defined)
+		0x09,0x02,				//		Usage(Mouse)
+		0x26,0xff,0x00,			//		Logical Maximum(255)
+		0x46,0xff,0x00,			//		Physical Maximum(255)
+		0x95,0x10,				//		Report Count(16)
+		0x75,0x08,				//		Report Size(8)
+		0x91,0x02,				//		Output(Variable)			- Feedback
+		0xc0					//	End Collection
+	----------------
+In	2.9565153	USBPort	81		01	00			Dispatch URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER
+Out	2.9588646	USBPort	00		01	00			Dispatch URB_FUNCTION_CLASS_INTERFACE
+Out	2.9590700	USBPort	00	01	01	00	USBD_STATUS_STALL_PID	Complete URB_FUNCTION_CONTROL_TRANSFER
+In	2.9590824	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_INTERFACE
+In	2.9594749	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x81
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 0 (0x0)
+       Value_DescriptorType: (34) Unknown
+       Index_Interface: 1 (0x1)	//	0x82(EP 2 IN)
+       wLength: 118 (0x76)
+	----------------
+	Report Descriptor
+		0x06,0x00,0xff,			//	Usage Page(Vendor-defined)
+		0x09,0x01,				//	Usage(Pointer)
+		0xa1,0x01,				//	Collection(Application)
+		0x85,0x10,				//		Report ID(16)
+		0x75,0x08,				//		Report Size(8)
+		0x95,0x06,				//		Report Count(6)
+		0x15,0x00,				//		Logical Minimum(0)
+		0x26,0xff,0x00,			//		Logical Maximum(255)
+		0x09,0x01,				//		Usage(Pointer)
+		0x81,0x00,				//		Input(Data,Array,Abs)
+		0x09,0x01,				//		Usage(Pointer)
+		0x91,0x00,				//		Output(Data,Array,Abs)
+		0xc0					//	End Collection
+		0x06,0x00,0xff,			//	Usage Page(Vendor-defined)
+		0x09,0x02,				//	Usage(Mouse)
+		0xa1,0x01,				//	Collection(Application)
+		0x85,0x11,				//		Report ID(17)
+		0x75,0x08,				//		Report Size(8)
+		0x95,0x13,				//		Report Count(19)
+		0x15,0x00,				//		Logical Minimum(0)
+		0x26,0xff,0x00,			//		Logical Maximum(255)
+		0x09,0x02,				//		Usage(Mouse)
+		0x81,0x00,				//		Input(Data,Array,Abs)
+		0x09,0x02,				//		Usage(Mouse)
+		0x91,0x00,				//		Output(Data,Array,Abs)
+		0xc0					//	End Collection
+	----------------
+In	2.9600676	USBPort	82		01	00			Dispatch URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER
+In	2.9600782	USBPort	82		01	00			Dispatch URB_FUNCTION_BULK_OR_INTERRUPT_TRANSFER
+In	2.9620846	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9623161	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+    - SetupPacket: GET_DESCRIPTOR
+     + bmRequestType: (Standard request) 0x80
+       bRequest: (6) GET_DESCRIPTOR
+       Value_DescriptorIndex: 4 (0x4)
+       Value_DescriptorType: (3) STRING
+       Index_Language: 1033 (0x409)
+       wLength: 258 (0x102)
+      fid_URB_TransferDataLength: 50 (0x32)
+	----------------
+	StringDescriptor
+		bLength					0x32
+		bDescriptorType			0x03
+		bString					0x55 0x00 0x38 0x00 0x39 0x00 0x2e 0x00		U.8.9...
+								0x30 0x00 0x30 0x00 0x5f 0x00 0x42 0x00		0.0._.B.
+								0x30 0x00 0x30 0x00 0x32 0x00 0x35 0x00		0.0.2.5.
+								0x20 0x00 0x20 0x00 0x20 0x00 0x20 0x00		 . . . .
+								0x20 0x00 0x20 0x00 0x20 0x00 0x20 0x00		 . . . .
+								0x20 0x00 0x20 0x00 0x20 0x00 0x20 0x00		 . . . .
+	----------------
+In	2.9663361	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9665558	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("U89.00_B0025            ")
+	----------------
+In	2.9680744	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9684300	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9690301	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9693054	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9694974	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9696790	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9704715	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9706794	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9709822	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9712041	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9713748	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9715563	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("G29 Driving Force Racing Wheel")
+	----------------
+In	2.9719411	USBPort	00		01	00			Dispatch URB_FUNCTION_GET_DESCRIPTOR_FROM_DEVICE
+In	2.9721781	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER with Data
+	----------------
+	StringDescriptor("U89.00_B0025            ")
+	----------------
+Out	2.9764029	USBPort	00		01	00			Dispatch URB_FUNCTION_CLASS_INTERFACE
+Out	2.9765801	USBPort	00	01	01	00	success	Complete URB_FUNCTION_CONTROL_TRANSFER
+
+<0x81(EP 1 IN)>
+None			3.4102493	08 00 00 00 19 82 FF FF FF 7F 85 9C
+Steering(L)		6.9741762	08 00 00 00 00 00 FF FF FF 7F 85 9C
+Steering(R)		13.7241492	08 00 00 00 FF FF FF FF FF 7F 85 9C
+Pedal(Accel)	17.5761400	08 00 00 00 CB 7D 00 FF FF 7F 85 9C
+Pedal(Brake)	19.5162071	08 00 00 00 CB 7D FF 00 FF 7F 85 9C
+Pedal(Clutch)	21.0621339	08 00 00 00 CB 7D FF FF 00 7F 85 9C
+Pad(L)			24.8581888	06 00 00 00 CB 7D FF FF FF 7F 85 9C
+Pad(R)			26.3981922	02 00 00 00 CB 7D FF FF FF 7F 85 9C
+Pad(U)			27.4281889	00 00 00 00 CB 7D FF FF FF 7F 85 9C
+Pad(D)			29.5002010	04 00 00 00 CB 7D FF FF FF 7F 85 9C
+Button(ÅZ)		31.6181759	48 00 00 00 CB 7D FF FF FF 7F 85 9C
+Button(Å~)		32.8781702	18 00 00 00 F7 7D FF FF FF 7F 85 9C
+Button(Å¢)		34.0061589	88 00 00 00 F4 7D FF FF FF 7F 85 9C
+Button(Å†)		35.5001750	28 00 00 00 F6 7D FF FF FF 7F 85 9C
+Button(L1)		43.1501707	08 02 00 00 F7 7D FF FF FF 7F 85 9C
+Button(R1)		44.6601469	08 01 00 00 F7 7D FF FF FF 7F 85 9C
+Button(L2)		46.1241505	08 08 00 00 F7 7D FF FF FF 7F 85 9C
+Button(R2)		47.0281445	08 04 00 00 F7 7D FF FF FF 7F 85 9C
+Button(L3)		48.4481402	08 80 00 00 F8 7D FF FF FF 7F 85 9C
+Button(R3)		49.9801365	08 40 00 00 F8 7D FF FF FF 7F 85 9C
+Button(SHARE)	51.4661362	08 10 00 00 F8 7D FF FF FF 7F 85 9C
+Button(OPTION)	52.6421503	08 20 00 00 F8 7D FF FF FF 7F 85 9C
+Button(PS)		53.7061500	08 00 00 10 F8 7D FF FF FF 7F 85 9C
+Button(+)		56.1281308	08 00 80 00 F8 7D FF FF FF 7F 85 9C
+Button(-)		57.4161277	08 00 00 01 F8 7D FF FF FF 7F 85 9C
+Dial(Enter)		59.2001218	08 00 00 08 F8 7D FF FF FF 7F 85 9C
+Dial(L)			60.2921137	08 00 00 04 F8 7D FF FF FF 7F 85 9C
+Dial(R)			62.0461138	08 00 00 02 F8 7D FF FF FF 7F 85 9C
+Shift(1)		69.6020221	08 00 01 00 F8 7D FF FF FF 37 C3 9C
+Shift(2)		71.5360923	08 00 02 00 F8 7D FF FF FF 3C 3F 9C
+Shift(3)		73.1680985	08 00 04 00 F8 7D FF FF FF 7E C3 9C
+Shift(4)		74.5300842	08 00 08 00 F8 7D FF FF FF 7E 40 9C
+Shift(5)		76.5220250	08 00 10 00 F8 7D FF FF FF BA C3 9C
+Shift(6)		77.9360846	08 00 20 00 F8 7D FF FF FF B6 40 9C
+Shift(R)		82.9560765	08 00 40 00 F8 7D FF FF FF AE 49 9C
+
+<0x82(EP 2 IN)>
+            00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F  10 11 12 13  01234567 89ABCDEF 0123
+-------------------------------------------------------------------------------------------------
+2.9775653   11 FF 00 1C 04 02 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+2.9795634   11 FF 00 1C 04 02 39 00  00 00 00 00 00 00 00 00  00 00 00 00  ......9. ........ ....
+2.9815636   11 FF 00 0C 03 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+2.9835626   11 FF 03 1C 00 55 20 20  89 00 00 25 00 00 00 00  00 00 00 00  .....U   ...%.... ....
+2.9855625   11 FF 00 0C 04 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+2.9875627   11 FF 04 2C 0A 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+2.9895511   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+2.9915647   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+2.9995634   11 FF 03 0C 04 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+3.0035625   11 FF 04 0C 1E 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+3.0055634   11 FF 04 1C 47 32 39 20  44 72 69 76 69 6E 67 20  46 6F 72 63  ....G29  Driving  Forc
+3.0075490   11 FF 04 1C 65 20 52 61  63 69 6E 67 20 57 68 65  65 6C 00 00  ....e Ra cing Whe el..
+3.0095657   11 FF 03 1C 00 55 20 20  89 00 00 25 00 00 00 00  00 00 00 00  .....U   ...%.... ....
+3.0155648   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+3.0415651   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+3.0876045   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+3.0896106   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
+3.0915652   11 FF 00 0C 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00  ........ ........ ....
