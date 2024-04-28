@@ -395,19 +395,10 @@ VOID					PS::stRead(
 	}else{
 		*lpbreturn=stbReadBYTE(0x42);
 	}
-	bnsize=(((*lpbreturn-1)&0x0f)<<1)+2;
-	lpbreturn++;
-	//	2
-	if(bncommand){
-		*lpbreturn=stbReadBYTE(*lpcbcommand);
-		lpcbcommand++;
-		bncommand--;
-	}else{
-		*lpbreturn=stbReadBYTE(0x00);
-	}
-	lpbreturn++;
-	//	3~
-	while(1<bnsize){
+	if(*lpbreturn!=0xff){
+		bnsize=(((*lpbreturn-1)&0x0f)<<1)+2;
+		lpbreturn++;
+		//	2
 		if(bncommand){
 			*lpbreturn=stbReadBYTE(*lpcbcommand);
 			lpcbcommand++;
@@ -416,12 +407,23 @@ VOID					PS::stRead(
 			*lpbreturn=stbReadBYTE(0x00);
 		}
 		lpbreturn++;
-		bnsize--;
+		//	3~
+		while(1<bnsize){
+			if(bncommand){
+				*lpbreturn=stbReadBYTE(*lpcbcommand);
+				lpcbcommand++;
+				bncommand--;
+			}else{
+				*lpbreturn=stbReadBYTE(0x00);
+			}
+			lpbreturn++;
+			bnsize--;
+		}
+		OFW::stNOP();OFW::stNOP();OFW::stNOP();OFW::stNOP();OFW::stNOP();OFW::stNOP();
+		//	Last
+		if(bncommand)*lpbreturn=stbReadBYTE_NoACK(*lpcbcommand);
+		else *lpbreturn=stbReadBYTE_NoACK(0x00);
 	}
-	OFW::stNOP();OFW::stNOP();OFW::stNOP();OFW::stNOP();OFW::stNOP();OFW::stNOP();
-	//	Last
-	if(bncommand)*lpbreturn=stbReadBYTE_NoACK(*lpcbcommand);
-	else *lpbreturn=stbReadBYTE_NoACK(0x00);
 	//	Close
 	OFW_DRIVER_PS_REGISTER_PORT=REGISTER_stcbcPORTDefault|REGISTER_stcbcMaskCMD|REGISTER_stcbcMaskSEL|REGISTER_stcbcMaskCLK;
 	return;

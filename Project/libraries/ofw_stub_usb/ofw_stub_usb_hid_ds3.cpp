@@ -78,10 +78,18 @@ VOID					USB_HID_DS3::Main_Self(VOID){
 		writeFeature=writeThis;
 	}
 	//	明示的なバッファチェックをしておかないとダンマリになる場合があります
-	while((EP_Main_stbnGetReadable(IDEndPoint_Read0)==0)&&(EP_Main_stbnGetWritable(IDEndPoint_Write0)==0));
-	if(EP_Main_stsznRead(IDEndPoint_Read0,&read0This,sizeof(read0This))!=sizeof(read0This))read0This.bcReportID=0xff;
-	EP_Main_stWrite(IDEndPoint_Write0,&writeThis,sizeof(writeThis));
-	writeThis.Clear();
+	do{
+		const auto				cbnreadable=EP_Main_stbnGetReadable(IDEndPoint_Read0);
+		const auto				cbnwritable=EP_Main_stbnGetWritable(IDEndPoint_Write0);
+
+		eReadable=(sizeof(read0This)<=cbnreadable);
+		if(eReadable)if(EP_Main_stsznRead(IDEndPoint_Read0,&read0This,sizeof(read0This))!=sizeof(read0This))read0This.bcReportID=0xff;
+		eWritable=(sizeof(writeThis)<=cbnwritable);
+		if(eWritable){
+			EP_Main_stWrite(IDEndPoint_Write0,&writeThis,sizeof(writeThis));
+			writeThis.Clear();
+		}
+	}while((!eReadable)&&(!eWritable));
 	return;
 }
 
@@ -235,7 +243,7 @@ VOID					USB_HID_DS3::VECTOR_Request_Standard_Descriptor_Configuration(VOID){
 			IDEndPoint_Read0|EP_stcbcDirectionRead,	//	bcEndpointAddress
 			EP_stcbcDescriptorTypeInterrupt,	//	bcAttribute
 			OFW_stwEndianL(EP_stcsznBuffer),	//	wnMaxPacketSize
-			5						//	bnInterval
+			1						//	bnInterval
 		},						//	epdescRead0
 		{
 			sizeof(ENDPOINTDESC),	//	bnLength
@@ -243,7 +251,7 @@ VOID					USB_HID_DS3::VECTOR_Request_Standard_Descriptor_Configuration(VOID){
 			IDEndPoint_Write0|EP_stcbcDirectionWrite,	//	bcEndpointAddress
 			EP_stcbcDescriptorTypeInterrupt,	//	bcAttribute
 			OFW_stwEndianL(EP_stcsznBuffer),	//	wnMaxPacketSize
-			5						//	bnInterval
+			1						//	bnInterval
 		}						//	epdescWrite0
 	}),sizeof(USERDESC));
 	return;

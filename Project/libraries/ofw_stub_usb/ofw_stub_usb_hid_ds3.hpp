@@ -254,6 +254,8 @@ namespace ofw{
 			};
 			WRITE					writeThis;
 			WRITE					writeFeature;
+			BOOL					eReadable:1;
+			BOOL					eWritable:1;
 		public:
 			INLINE CREAD0&			cread0DelegateThis(VOID)const{
 				return read0This;
@@ -264,8 +266,14 @@ namespace ofw{
 			INLINE WRITE&			writeDelegateThis(VOID){
 				return writeThis;
 			}
-			INLINE BYTE				bcGetReportID(VOID){
+			INLINE BYTE				bcGetReportID(VOID)const{
 				return read0This.bcReportID;
+			}
+			INLINE BOOL				eIsReadable(VOID)const{
+				return eReadable;
+			}
+			INLINE BOOL				eIsWritable(VOID)const{
+				return eWritable;
 			}
 		private:
 			VOID					Main_Self(VOID);
