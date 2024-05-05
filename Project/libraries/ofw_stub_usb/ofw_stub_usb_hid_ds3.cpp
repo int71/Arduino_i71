@@ -69,6 +69,16 @@ VOID					USB_HID_DS3::WRITE::Clear(VOID){
 //		class:USB_HID_DS3
 //
 
+//	public
+
+BOOL					USB_HID_DS3::eIsReadable(VOID){
+	if(EP_Main_stbnGetReadable(IDEndPoint_Read0)){
+		if(EP_Main_stsznRead(IDEndPoint_Read0,&read0This,sizeof(read0This))<sizeof(read0This))return FALSE;
+		return TRUE;
+	}
+	return FALSE;
+}
+
 //	private
 
 VOID					USB_HID_DS3::Main_Self(VOID){
@@ -77,19 +87,15 @@ VOID					USB_HID_DS3::Main_Self(VOID){
 
 		writeFeature=writeThis;
 	}
-	//	明示的なバッファチェックをしておかないとダンマリになる場合があります
-	do{
-		const auto				cbnreadable=EP_Main_stbnGetReadable(IDEndPoint_Read0);
+	while(TRUE){
 		const auto				cbnwritable=EP_Main_stbnGetWritable(IDEndPoint_Write0);
 
-		eReadable=(sizeof(read0This)<=cbnreadable);
-		if(eReadable)if(EP_Main_stsznRead(IDEndPoint_Read0,&read0This,sizeof(read0This))!=sizeof(read0This))read0This.bcReportID=0xff;
-		eWritable=(sizeof(writeThis)<=cbnwritable);
-		if(eWritable){
+		if(sizeof(writeThis)<=cbnwritable){
 			EP_Main_stWrite(IDEndPoint_Write0,&writeThis,sizeof(writeThis));
 			writeThis.Clear();
+			break;
 		}
-	}while((!eReadable)&&(!eWritable));
+	}
 	return;
 }
 

@@ -163,12 +163,12 @@ SIZE					USB::EP_stsznRead(
 		EP_stOpen(biep);
 		bnrest=EP_stbnGetRest();
 		if(bnrest<sznthis)sznthis=bnrest;
-		bnrest=sznthis;
+		else bnrest=sznthis;
 		for(;bnrest;bnrest--){
 			*lpbthis=EP_stbRead();
 			lpbthis++;
 		}
-		if(sznthis&&(EP_stbnGetRest()==0))EP_stReleaseRead();
+		EP_stReleaseRead();
 	}
 	return sznthis;
 }
