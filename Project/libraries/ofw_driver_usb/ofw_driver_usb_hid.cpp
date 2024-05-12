@@ -139,9 +139,17 @@ VOID					USB_HID::READ_G29::Clear(VOID){
 
 //	public
 
-VOID					USB_HID::New(VOID){
-	if(usbThis.Init()==-1)while(TRUE);
-	return;
+BOOL					USB_HID::eNew(VOID){
+	if(usbThis.Init(1)==0){
+		const auto			cbcrevision=usbThis.regRd(18<<3);
+
+		if(
+			(cbcrevision==0x01)||
+			(cbcrevision==0x12)||
+			(cbcrevision==0x13)
+		)return TRUE;
+	}
+	return FALSE;
 }
 
 VOID					USB_HID::Delete(VOID){

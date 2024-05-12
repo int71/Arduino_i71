@@ -200,7 +200,7 @@ namespace ofw{
 			/* VOID */				USB_HID(VOID):HIDUniversal(&usbThis){
 				return;
 			}
-			INLINE VOID				New(VOID);
+			INLINE BOOL				eNew(VOID);
 			INLINE VOID				Delete(VOID);
 			INLINE VOID				Main(VOID);
 			INLINE BOOL				eIsConnected(VOID);
