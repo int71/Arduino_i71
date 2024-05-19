@@ -15,6 +15,7 @@ Web      :  http://www.circuitsathome.com
 e-mail   :  support@circuitsathome.com
  */
 /* MAX3421E-based USB Host Library header file */
+#include				<ofw.hpp>
 
 #if !defined(_usb_h_) || defined(_USBHOST_H_)
 #error "Never include usbhost.h directly; include Usb.h instead"
@@ -448,7 +449,7 @@ int8_t MAX3421e< SPI_SS, INTR >::Init(int mseconds) {
         // Delay a minimum of 1 second to ensure any capacitors are drained.
         // 1 second is required to make sure we do not smoke a Microdrive!
         if(mseconds < 1000) mseconds = 1000;
-        delay(mseconds);
+        OFW::stWait(mseconds);//delay(mseconds);
 
         regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST); // set pull-downs, Host
 

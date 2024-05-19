@@ -370,7 +370,7 @@ VOID					USB::stNew_Clock(VOID){
 #endif
 	PLLCSR|=(1<<PLLE);
 	while(!(PLLCSR&(1<<PLOCK)));	// wait for lock pll
-	delay(1);
+	OFW::stWait(1);//delay(1);
 #if defined(OTGPADE)	// start USB clock, enable VBUS Pad
 	USBCON=(USBCON&~(1<<FRZCLK))|(1<<OTGPADE);
 #else					// start USB clock

@@ -17,6 +17,7 @@ e-mail   :  support@circuitsathome.com
 /* USB functions */
 
 #include "ofw_driver_usb.hpp"
+#include				<ofw.hpp>
 
 static uint8_t usb_error = 0;
 static uint8_t usb_task_state;
@@ -258,7 +259,7 @@ uint8_t USB::InTransfer(EpInfo *pep, uint16_t nak_limit, uint16_t *nbytesptr, ui
                         rcode = 0;
                         break;
                 } else if(bInterval > 0)
-                        delay(bInterval); // Delay according to polling interval
+                        OFW::stWait(bInterval);//delay(bInterval); // Delay according to polling interval
         } //while( 1 )
         return ( rcode);
 }
@@ -551,13 +552,13 @@ again:
                 if(parent == 0) {
                         // Send a bus reset on the root interface.
                         regWr(rHCTL, bmBUSRST); //issue bus reset
-                        delay(102); // delay 102ms, compensate for clock inaccuracy.
+                        OFW::stWait(102);//delay(102); // delay 102ms, compensate for clock inaccuracy.
                 } else {
                         // reset parent port
                         devConfig[parent]->ResetHubPort(port);
                 }
         } else if(rcode == hrJERR && retries < 3) { // Some devices returns this when plugged in - trying to initialize the device again usually works
-                delay(100);
+                OFW::stWait(100);//delay(100);
                 retries++;
                 goto again;
         } else if(rcode)
@@ -565,7 +566,7 @@ again:
 
         rcode = devConfig[driver]->Init(parent, port, lowspeed);
         if(rcode == hrJERR && retries < 3) { // Some devices returns this when plugged in - trying to initialize the device again usually works
-                delay(100);
+                OFW::stWait(100);//delay(100);
                 retries++;
                 goto again;
         }
@@ -574,7 +575,7 @@ again:
                 if(parent == 0) {
                         // Send a bus reset on the root interface.
                         regWr(rHCTL, bmBUSRST); //issue bus reset
-                        delay(102); // delay 102ms, compensate for clock inaccuracy.
+                        OFW::stWait(102);//delay(102); // delay 102ms, compensate for clock inaccuracy.
                 } else {
                         // reset parent port
                         devConfig[parent]->ResetHubPort(port);
@@ -768,7 +769,7 @@ uint8_t USB::getStrDescr(uint8_t addr, uint8_t ep, uint16_t ns, uint8_t index, u
 uint8_t USB::setAddr(uint8_t oldaddr, uint8_t ep, uint8_t newaddr) {
         uint8_t rcode = ctrlReq(oldaddr, ep, bmREQ_SET, USB_REQUEST_SET_ADDRESS, newaddr, 0x00, 0x0000, 0x0000, 0x0000, NULL, NULL);
         //delay(2); //per USB 2.0 sect.9.2.6.3
-        delay(300); // Older spec says you should wait at least 200ms
+        OFW::stWait(300);//delay(300); // Older spec says you should wait at least 200ms
         return rcode;
         //return ( ctrlReq(oldaddr, ep, bmREQ_SET, USB_REQUEST_SET_ADDRESS, newaddr, 0x00, 0x0000, 0x0000, 0x0000, NULL, NULL));
 }

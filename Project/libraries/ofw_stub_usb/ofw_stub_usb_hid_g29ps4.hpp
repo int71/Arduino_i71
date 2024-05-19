@@ -193,20 +193,18 @@ namespace ofw{
 		private:
 			READ					readThis;
 			WRITE					writeThis;
-			driver::LPUSB_HID		lpusbDS4;
+			WRITE					writeFeature;
+			driver::LPUSB_HID		lpdusbPSKey;
 		public:
-			/* VOID */				USB_HID_G29PS4(driver::LPUSB_HID lpusbds4):
-				lpusbDS4(lpusbds4)
+			/* VOID */				USB_HID_G29PS4(const driver::LPUSB_HID clpusbpskey):
+				lpdusbPSKey(clpusbpskey)
 			{}
+			BOOL					eIsReadable(VOID);
 			INLINE CREAD&			creadDelegateThis(VOID)const{
 				return readThis;
 			}
 			INLINE WRITE&			writeDelegateThis(VOID){
 				return writeThis;
-			}
-			INLINE BOOL				eIsReadValid(VOID){
-				if(readThis.bcReportID==0x05)return TRUE;
-				return FALSE;
 			}
 		private:
 			VOID					Main_Self(VOID);
@@ -219,7 +217,7 @@ namespace ofw{
 			VOID					VECTOR_Request_Standard_Descriptor_Report(VOID);
 			VOID					VECTOR_Request_Class_Interface_Read(LPREQUEST lpreqsource,LPCBYTE lpcbsource,SIZE sznsource);
 			SIZE					VECTOR_Request_Class_Interface_sznWrite(LPREQUEST lpreqsource,LPBYTE lpbdestination);
-			BOOL					eDS4(VOID);
+			BOOL					ePSKey(VOID);
 		};
 	}
 }

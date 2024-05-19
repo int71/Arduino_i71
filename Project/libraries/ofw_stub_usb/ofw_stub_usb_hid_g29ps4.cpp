@@ -6,11 +6,27 @@
 **	stub/usb_hid_g29ps4								2024 written by int71	**
  ****************************************************************************/
 
+//	_DEBUG_PIN
+//		デバッグ用PIN出力
+//		・「stub::USB_HID_G29PS4」FEATURE読み書き期間:PD0
+//		・「stub::USB_HID_G29PS4::EP_Main_stWrite」実行期間:PD1
+//	_DEBUG_SERIAL
+//		シリアル初期化、文字出力ON
+//	_DEBUG_NOG29
+//		タイミング把握用USBホストシールド無し動作
+
+#define _DEBUG_PIN
+#define _DEBUG_SERIAL
+//#define _DEBUG_NOG29
+
 //
 //		include
 //
 
 #include				<ofw_stub_usb_hid_g29ps4.hpp>
+#ifdef _DEBUG_SERIAL
+#include				<ofw_driver_serial0.hpp>
+#endif
 
 //
 //		using
@@ -60,31 +76,40 @@ VOID					USB_HID_G29PS4::WRITE::Clear(VOID){
 //		class:USB_HID_G29PS4
 //
 
+//	public
+
+BOOL					USB_HID_G29PS4::eIsReadable(VOID){
+	if(EP_Main_stbnGetReadable(IDEndPoint_Read0)){
+		if(EP_Main_stsznRead(IDEndPoint_Read0,&readThis,sizeof(readThis))<sizeof(readThis))return FALSE;
+		return TRUE;
+	}
+	return FALSE;
+}
+
 //	private
 
 VOID					USB_HID_G29PS4::Main_Self(VOID){
-	while((EP_Main_stbnGetReadable(IDEndPoint_Read0)==0)&&(EP_Main_stbnGetWritable(IDEndPoint_Write0)==0))lpusbDS4->Main();
-/*
-	if(eDS4()){
-		if(writeThis.n4cPad==8)writeThis.n4cPad=lpusbDS4->creadDelegateThis().readVID054CPID09CC.n4cPad;
-		writeThis.eButtonSquare		|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonSquare;
-		writeThis.eButtonCross		|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonCross;
-		writeThis.eButtonCircle		|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonCircle;
-		writeThis.eButtonTriangle	|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonTriangle;
-		writeThis.eButtonL1			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonL1;
-		writeThis.eButtonR1			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonR1;
-		writeThis.eButtonL2			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonL2;
-		writeThis.eButtonR2			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonR2;
-		writeThis.eButtonShare		|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonShare;
-		writeThis.eButtonOption		|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonOption;
-		writeThis.eButtonL3			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonL3;
-		writeThis.eButtonR3			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonR3;
-		writeThis.eButtonPS			|=lpusbDS4->creadDelegateThis().readVID054CPID09CC.eButtonPS;
+	{
+		ATOMIC					atomic;
+
+		writeFeature=writeThis;
 	}
-*/
-	if(EP_Main_stsznRead(IDEndPoint_Read0,&readThis,sizeof(readThis))!=sizeof(readThis))readThis.bcReportID=0x00;
-	EP_Main_stWrite(IDEndPoint_Write0,&writeThis,sizeof(writeThis));
-	writeThis.Clear();
+	while(TRUE){
+		ATOMIC					atomic;
+		const auto				cbnwritable=EP_Main_stbnGetWritable(IDEndPoint_Write0);
+
+		if(sizeof(writeThis)<=cbnwritable){
+#ifdef _DEBUG_PIN
+			PORTD|=0x02;
+#endif
+			EP_Main_stWrite(IDEndPoint_Write0,&writeThis,sizeof(writeThis));
+			writeThis.Clear();
+#ifdef _DEBUG_PIN
+			PORTD&=~0x02;
+#endif
+			break;
+		}
+	}
 	return;
 }
 
@@ -269,10 +294,39 @@ VOID					USB_HID_G29PS4::VECTOR_Request_Standard_Descriptor_String(
 VOID					USB_HID_G29PS4::New_Self2(VOID){
 	readThis.New();
 	writeThis.New();
+#ifdef _DEBUG_PIN
+	DDRD|=0x93;
+#endif
+#ifdef _DEBUG_SERIAL
+	driver::SERIAL0::stNew(115200);
+	driver::SERIAL0::stPrintClear();
+	driver::SERIAL0::stPrint(ARGSTR("START\r\n"));
+#endif
+#ifndef _DEBUG_NOG29
+	do{
+		OFW::stWait(100);
+		lpdusbPSKey->Main();
+#ifdef _DEBUG_SERIAL
+		if(lpdusbPSKey->eIsConnected()){
+			driver::SERIAL0::stPrint(ARGSTR("CONNECTED:"));
+			driver::SERIAL0::stPrintHEX(BYTE(lpdusbPSKey->wGetVID()>>8));
+			driver::SERIAL0::stPrintHEX(BYTE(lpdusbPSKey->wGetVID()&0xff));
+			driver::SERIAL0::stPrintHEX(BYTE(lpdusbPSKey->wGetPID()>>8));
+			driver::SERIAL0::stPrintHEX(BYTE(lpdusbPSKey->wGetPID()&0xff));
+			driver::SERIAL0::stPrint(ARGSTR("\r\n"));
+		}else{
+			driver::SERIAL0::stPrint(ARGSTR("CONNECTING...\r\n"));
+		}
+#endif
+	}while(!ePSKey());
+#endif
 	return;
 }
 
 VOID					USB_HID_G29PS4::Delete_Self2(VOID){
+#ifdef _DEBUG_SERIAL
+	driver::SERIAL0::stDelete();
+#endif
 	writeThis.Delete();
 	readThis.Delete();
 	return;
@@ -288,14 +342,25 @@ VOID					USB_HID_G29PS4::VECTOR_Request_Class_Interface_Read(
 	LPCBYTE					lpcbsource,
 	SIZE					sznsource
 ){
-/*
-	if(eDS4())switch(lpreqsource->bValueLSB){
-	case 0xf0:
-		lpusbDS4->WriteControlReport(0xf0,lpcbsource,sznsource);
-		break;
+#ifdef _DEBUG_SERIAL
+	driver::SERIAL0::stPrint(ARGSTR("WRITE("));
+	driver::SERIAL0::stPrintHEX(lpreqsource->bValueLSB);
+	driver::SERIAL0::stPrint(ARGSTR("):"));
+	for(SIZE szisource=0;szisource<sznsource;++szisource){
+		driver::SERIAL0::stPrintHEX(lpcbsource[szisource]);
+		if(szisource+1<sznsource)driver::SERIAL0::stPrint(ARGSTR(" "));
 	}
-*/
-	if(eDS4())lpusbDS4->WriteControlReport(lpreqsource->bValueLSB,lpcbsource,sznsource);
+	driver::SERIAL0::stPrint(ARGSTR("\r\n"));
+#endif
+#ifndef _DEBUG_NOG29
+#ifdef _DEBUG_PIN
+			PORTD|=0x01;
+#endif
+	if(ePSKey())lpdusbPSKey->WriteControlReport(lpreqsource->bValueLSB,lpcbsource,sznsource);
+#ifdef _DEBUG_PIN
+			PORTD&=~0x01;
+#endif
+#endif
 	return;
 }
 
@@ -303,8 +368,16 @@ SIZE					USB_HID_G29PS4::VECTOR_Request_Class_Interface_sznWrite(
 	LPREQUEST				lpreqsource,
 	LPBYTE					lpbdestination
 ){
-/*
-	if(eDS4())switch(lpreqsource->bValueLSB){
+#ifndef _DEBUG_NOG29
+#ifdef _DEBUG_PIN
+			PORTD|=0x01;
+#endif
+	if(ePSKey())lpdusbPSKey->ReadControlReport(lpreqsource->bValueLSB,lpbdestination,lpreqsource->wnLength);
+#ifdef _DEBUG_PIN
+			PORTD&=~0x01;
+#endif
+#else
+	switch(lpreqsource->bValueLSB){
 	case 0x03:
 		OFW::stCopy(lpbdestination,ARGBYTE(
 			0x03,0x21,0x27,0x03,0x11,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -313,10 +386,17 @@ SIZE					USB_HID_G29PS4::VECTOR_Request_Class_Interface_sznWrite(
 		),0x30);
 		break;
 	case 0xf1:
-		lpusbDS4->ReadControlReport(0xf1,lpbdestination,lpreqsource->wnLength);
+		OFW::stCopy(lpbdestination,ARGBYTE(
+			0xf1,0x01,0x00,0x00,0x35,0xd8,0x50,0x71,0x44,0x20,0x05,0xf7,0xaf,0x7d,0x0b,0xbf,
+			0x94,0x32,0xd4,0xc7,0x8a,0x1e,0x04,0x9b,0x9d,0xbe,0xc5,0x2a,0x89,0x37,0x32,0x65,
+			0x39,0xf4,0xae,0x46,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+		),0x40);
 		break;
 	case 0xf2:
-		lpusbDS4->ReadControlReport(0xf2,lpbdestination,lpreqsource->wnLength);
+		OFW::stCopy(lpbdestination,ARGBYTE(
+			0xf2,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+		),0x10);
 		break;
 	case 0xf3:
 		OFW::stCopy(lpbdestination,ARGBYTE(
@@ -324,15 +404,25 @@ SIZE					USB_HID_G29PS4::VECTOR_Request_Class_Interface_sznWrite(
 		),0x08);
 		break;
 	}
-*/
-	if(eDS4())lpusbDS4->ReadControlReport(lpreqsource->bValueLSB,lpbdestination,lpreqsource->wnLength);
+#endif
+#ifdef _DEBUG_SERIAL
+	driver::SERIAL0::stPrint(ARGSTR("READ("));
+	driver::SERIAL0::stPrintHEX(lpreqsource->bValueLSB);
+	driver::SERIAL0::stPrint(ARGSTR("):"));
+	for(SIZE szidestination=0;szidestination<lpreqsource->wnLength;++szidestination){
+		driver::SERIAL0::stPrintHEX(lpbdestination[szidestination]);
+		if(szidestination+1<lpreqsource->wnLength)driver::SERIAL0::stPrint(ARGSTR(" "));
+	}
+	driver::SERIAL0::stPrint(ARGSTR("\r\n"));
+#endif
 	return lpreqsource->wnLength;
 }
 
-BOOL					USB_HID_G29PS4::eDS4(VOID){
-	if(lpusbDS4->eIsConnected())if(
-		((lpusbDS4->wGetVID()==0x054c)&&(lpusbDS4->wGetPID()==0x09cc))||	//	DS4
-		((lpusbDS4->wGetVID()==0x046d)&&(lpusbDS4->wGetPID()==0xc260))		//	GT29
+BOOL					USB_HID_G29PS4::ePSKey(VOID){
+#ifndef _DEBUG_NOG29
+	if(lpdusbPSKey->eIsConnected())if(
+		((lpdusbPSKey->wGetVID()==0x046d)&&(lpdusbPSKey->wGetPID()==0xc260))		//	GT29
 	)return TRUE;
+#endif
 	return FALSE;
 }
