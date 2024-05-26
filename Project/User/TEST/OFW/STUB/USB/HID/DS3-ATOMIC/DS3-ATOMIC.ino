@@ -11,7 +11,11 @@ int main(void){
 	while(TRUE){
 		static WORD			stwtemp=0x0000;
 
-		stub::USB::stMain();
+		{
+			ATOMIC				atomic;
+
+			stub::USB::stMain();
+		}
 		stwtemp++;
 		if(stwtemp&0x0040){
 			usbthis.writeDelegateThis().eButtonCircle=TRUE;

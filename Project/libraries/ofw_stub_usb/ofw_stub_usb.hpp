@@ -271,6 +271,7 @@ namespace ofw{
 			public:
 				BYTE					bnInstance;
 				LPUSB					lpusbRoot;
+				BYTE					biNOATOMIC;
 				BOOL					eInitialized:1;
 				BOOL					eSuspended:1;
 				BOOL					eRemoteWakeUp:1;

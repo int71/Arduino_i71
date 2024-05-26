@@ -43,7 +43,14 @@ USB::ST					USB::st;
 //	public
 
 VOID					USB::stMain(VOID){
-	st.lpusbRoot->Main_Self();
+	if(st.biNOATOMIC){
+		NOATOMIC				noatomic;
+
+		st.lpusbRoot->Main_Self();
+		--st.biNOATOMIC;
+	}else{
+		st.lpusbRoot->Main_Self();
+	}
 	return;
 }
 
@@ -432,6 +439,7 @@ BYTE					USB::EP_stbnGetWritable(VOID){
 
 void					USB::New_Local(void){
 	st.lpusbRoot=this;
+	st.biNOATOMIC=64;
 	New_Self();
 	return;
 }

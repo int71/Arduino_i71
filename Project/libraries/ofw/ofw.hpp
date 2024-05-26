@@ -265,6 +265,26 @@ namespace ofw{
 	};
 
 	//
+	//		class:NOATOMIC
+	//
+
+	class NOATOMIC{
+	private:
+		BYTE					bSave;
+	public:
+		/* VOID */				NOATOMIC(VOID):
+			bSave(SREG)
+		{
+			__asm__ __volatile__("sei;");
+			return;
+		}
+		/* VOID */				~NOATOMIC(VOID){
+			SREG=bSave;
+			return;
+		}
+	};
+
+	//
 	//		class:LPGVOID
 	//
 

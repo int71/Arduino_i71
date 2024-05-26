@@ -30,9 +30,9 @@ namespace ofw{
 		//
 
 		class ANALOG;
-		typedef const ANALOG	CPS;
-		typedef ANALOG*			LPPS;
-		typedef CPS*			LPCPS;
+		typedef const ANALOG	CANALOG;
+		typedef ANALOG*			LPANALOG;
+		typedef CANALOG*		LPCANALOG;
 
 		//
 		//		class:ANALOG

@@ -80,15 +80,15 @@ namespace ofw{
 			};
 			//	DEVICE
 			enum IDDEVICE{
-				IDDevice_None			=0x00,
+				IDDevice_None			=0x00,				//	120(usec)
 				IDDevice_NS_Initialize	=0x01,
 				IDDevice_NS_Digital		=0x02,
-				IDDevice_NS_neGcon		=0x03,
-				IDDevice_NS_DUALSHOCK	=0x04,
+				IDDevice_NS_neGcon		=0x03,				//	470(usec)
+				IDDevice_NS_DUALSHOCK	=0x04,				//	470(usec)
 				IDDevice_HS_Initialize	=0x08+0x01,
-				IDDevice_HS_Digital		=0x08+0x02,
-				IDDevice_HS_neGconPlus	=0x08+0x03,
-				IDDevice_HS_DUALSHOCK2	=0x08+0x04
+				IDDevice_HS_Digital		=0x08+0x02,			//	137(usec)
+				IDDevice_HS_neGconPlus	=0x08+0x03,			//	350(usec)
+				IDDevice_HS_DUALSHOCK2	=0x08+0x04			//	560(usec)
 			};
 			//	REGISTER
 			#define OFW_DRIVER_PS_REGISTER_DDR	DDRF

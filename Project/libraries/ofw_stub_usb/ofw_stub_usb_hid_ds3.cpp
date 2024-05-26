@@ -6,6 +6,12 @@
 **	stub/usb_hid_ds3								2024 written by int71	**
  ****************************************************************************/
 
+//	_DEBUG_PIN
+//		デバッグ用PIN出力
+//		・「stub::USB_HID_DS3::EP_Main_stWrite」実行期間:PD1
+
+//#define _DEBUG_PIN
+
 //
 //		include
 //
@@ -88,11 +94,18 @@ VOID					USB_HID_DS3::Main_Self(VOID){
 		writeFeature=writeThis;
 	}
 	while(TRUE){
+		ATOMIC					atomic;
 		const auto				cbnwritable=EP_Main_stbnGetWritable(IDEndPoint_Write0);
 
 		if(sizeof(writeThis)<=cbnwritable){
+#ifdef _DEBUG_PIN
+			PORTD|=0x02;
+#endif
 			EP_Main_stWrite(IDEndPoint_Write0,&writeThis,sizeof(writeThis));
 			writeThis.Clear();
+#ifdef _DEBUG_PIN
+			PORTD&=~0x02;
+#endif
 			break;
 		}
 	}
@@ -292,6 +305,9 @@ VOID					USB_HID_DS3::VECTOR_Request_Class_Interface(
 VOID					USB_HID_DS3::New_Self2(VOID){
 	read0This.New();
 	writeThis.New();
+#ifdef _DEBUG_PIN
+	DDRD|=0x93;
+#endif
 	return;
 }
 
