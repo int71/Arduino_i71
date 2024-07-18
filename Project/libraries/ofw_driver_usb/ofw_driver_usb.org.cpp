@@ -18,7 +18,6 @@ e-mail   :  support@circuitsathome.com
 
 #include "ofw_driver_usb.hpp"
 #include				<ofw.hpp>
-#include				<ofw_driver_serial0.hpp>
 
 static uint8_t usb_error = 0;
 static uint8_t usb_task_state;
@@ -113,7 +112,6 @@ uint8_t USB::SetAddress(uint8_t addr, uint8_t ep, EpInfo **ppep, uint16_t *nak_l
 /* 01-0f    =   non-zero HRSLT  */
 uint8_t USB::ctrlReq(uint8_t addr, uint8_t ep, uint8_t bmReqType, uint8_t bRequest, uint8_t wValLo, uint8_t wValHi,
         uint16_t wInd, uint16_t total, uint16_t nbytes, uint8_t* dataptr, USBReadParser *p) {
-driver::SERIAL0::stPrint(ARGSTR("ctrlReq:0\r\n"));
         bool direction = false; //request direction, IN or OUT
         uint8_t rcode;
         SETUP_PKT setup_pkt;
@@ -126,7 +124,6 @@ driver::SERIAL0::stPrint(ARGSTR("ctrlReq:0\r\n"));
         if(rcode)
                 return rcode;
 
-driver::SERIAL0::stPrint(ARGSTR("ctrlReq:1\r\n"));
         direction = ((bmReqType & 0x80) > 0);
 
         /* fill in setup packet */
@@ -144,7 +141,6 @@ driver::SERIAL0::stPrint(ARGSTR("ctrlReq:1\r\n"));
         if(rcode) //return HRSLT if not zero
                 return ( rcode);
 
-driver::SERIAL0::stPrint(ARGSTR("ctrlReq:2\r\n"));
         if(dataptr != NULL) //data stage, if present
         {
                 if(direction) //IN transfer
@@ -168,7 +164,6 @@ driver::SERIAL0::stPrint(ARGSTR("ctrlReq:2\r\n"));
                                 if(rcode)
                                         return rcode;
 
-driver::SERIAL0::stPrint(ARGSTR("ctrlReq:3\r\n"));
                                 // Invoke callback function if inTransfer completed successfully and callback function pointer is specified
                                 if(!rcode && p)
                                         ((USBReadParser*)p)->Parse(read, dataptr, total - left);
@@ -186,7 +181,6 @@ driver::SERIAL0::stPrint(ARGSTR("ctrlReq:3\r\n"));
                 if(rcode) //return error
                         return ( rcode);
         }
-driver::SERIAL0::stPrint(ARGSTR("ctrlReq:4\r\n"));
         // Status stage
         return dispatchPkt((direction) ? tokOUTHS : tokINHS, ep, nak_limit); //GET if direction
 }
@@ -209,7 +203,6 @@ uint8_t USB::inTransfer(uint8_t addr, uint8_t ep, uint16_t *nbytesptr, uint8_t* 
 }
 
 uint8_t USB::InTransfer(EpInfo *pep, uint16_t nak_limit, uint16_t *nbytesptr, uint8_t* data, uint8_t bInterval /*= 0*/) {
-driver::SERIAL0::stPrint(ARGSTR("InTransfer:0\r\n"));
         uint8_t rcode = 0;
         uint8_t pktsize;
 
@@ -229,14 +222,12 @@ driver::SERIAL0::stPrint(ARGSTR("InTransfer:0\r\n"));
                         continue;
                 }
                 if(rcode) {
-driver::SERIAL0::stPrint(ARGSTR("InTransfer:1\r\n"));
                         break; //should be 0, indicating ACK. Else return error code.
                 }
                 /* check for RCVDAVIRQ and generate error if not present */
                 /* the only case when absence of RCVDAVIRQ makes sense is when toggle error occurred. Need to add handling for that */
                 if((regRd(rHIRQ) & bmRCVDAVIRQ) == 0) {
                         rcode = 0xf0; //receive error
-driver::SERIAL0::stPrint(ARGSTR("InTransfer:2\r\n"));
                         break;
                 }
                 pktsize = regRd(rRCVBC); //number of received bytes
@@ -266,7 +257,6 @@ driver::SERIAL0::stPrint(ARGSTR("InTransfer:2\r\n"));
                         // Save toggle value
                         pep->bmRcvToggle = ((regRd(rHRSL) & bmRCVTOGRD)) ? 1 : 0;
                         rcode = 0;
-driver::SERIAL0::stPrint(ARGSTR("InTransfer:3\r\n"));
                         break;
                 } else if(bInterval > 0)
                         OFW::stWait(bInterval);//delay(bInterval); // Delay according to polling interval
@@ -369,7 +359,6 @@ uint8_t USB::dispatchPkt(uint8_t token, uint8_t ep, uint16_t nak_limit) {
         uint8_t retry_count = 0;
         uint16_t nak_count = 0;
 
-driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:0\r\n"));
         while((int32_t)((uint32_t)millis() - timeout) < 0L) {
                 regWr(rHXFR, (token | ep)); //launch the transfer
                 rcode = USB_ERROR_TRANSFER_TIMEOUT;
@@ -381,7 +370,6 @@ driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:0\r\n"));
                         if(tmpdata & bmHXFRDNIRQ) {
                                 regWr(rHIRQ, bmHXFRDNIRQ); //clear the interrupt
                                 rcode = 0x00;
-driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:1\r\n"));
                                 break;
                         }//if( tmpdata & bmHXFRDNIRQ
 
@@ -395,27 +383,19 @@ driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:1\r\n"));
                 switch(rcode) {
                         case hrNAK:
                                 nak_count++;
-                                if(nak_limit && (nak_count == nak_limit)){
-driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:2\r\n"));
+                                if(nak_limit && (nak_count == nak_limit))
                                         return (rcode);
-                                        }
                                 break;
                         case hrTIMEOUT:
                                 retry_count++;
-                                if(retry_count == USB_RETRY_LIMIT){
-driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:3\r\n"));
+                                if(retry_count == USB_RETRY_LIMIT)
                                         return (rcode);
-                                        }
                                 break;
                         default:
-driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:4/"));
-driver::SERIAL0::stPrintHEX(rcode);
-driver::SERIAL0::stPrint(ARGSTR("\r\n"));
                                 return (rcode);
                 }//switch( rcode
 
         }//while( timeout > millis()
-driver::SERIAL0::stPrint(ARGSTR("dispatchPkt:5\r\n"));
         return ( rcode);
 }
 
@@ -645,7 +625,6 @@ again:
  *
  */
 uint8_t USB::Configuring(uint8_t parent, uint8_t port, bool lowspeed) {
-driver::SERIAL0::stPrint(ARGSTR("Configuring:0\r\n"));
         //uint8_t bAddress = 0;
         uint8_t devConfigIndex;
         uint8_t rcode = 0;
@@ -669,7 +648,6 @@ driver::SERIAL0::stPrint(ARGSTR("Configuring:0\r\n"));
                 return USB_ERROR_ADDRESS_NOT_FOUND_IN_POOL;
         }
 
-driver::SERIAL0::stPrint(ARGSTR("Configuring:1\r\n"));
         // Save old pointer to EP_RECORD of address 0
         oldep_ptr = p->epinfo;
 
@@ -689,7 +667,6 @@ driver::SERIAL0::stPrint(ARGSTR("Configuring:1\r\n"));
                 return rcode;
         }
 
-driver::SERIAL0::stPrint(ARGSTR("Configuring:2\r\n"));
         // to-do?
         // Allocate new address according to device class
         //bAddress = addrPool.AllocAddress(parent, false, port);
@@ -698,8 +675,6 @@ driver::SERIAL0::stPrint(ARGSTR("Configuring:2\r\n"));
         uint16_t pid = udd->idProduct;
         uint8_t klass = udd->bDeviceClass;
         uint8_t subklass = udd->bDeviceSubClass;
-driver::SERIAL0::stPrint(ARGSTR("VID:"));driver::SERIAL0::stPrintHEX(WORD(vid));driver::SERIAL0::stPrint(ARGSTR("\r\n"));
-driver::SERIAL0::stPrint(ARGSTR("PID:"));driver::SERIAL0::stPrintHEX(WORD(pid));driver::SERIAL0::stPrint(ARGSTR("\r\n"));
         // Attempt to configure if VID/PID or device class matches with a driver
         // Qualify with subclass too.
         //
@@ -721,7 +696,6 @@ driver::SERIAL0::stPrint(ARGSTR("PID:"));driver::SERIAL0::stPrintHEX(WORD(pid));
         }
 
 
-driver::SERIAL0::stPrint(ARGSTR("Configuring:3\r\n"));
         // blindly attempt to configure
         for(devConfigIndex = 0; devConfigIndex < USB_NUMDEVICES; devConfigIndex++) {
                 if(!devConfig[devConfigIndex]) continue;
@@ -738,7 +712,6 @@ driver::SERIAL0::stPrint(ARGSTR("Configuring:3\r\n"));
                         return rcode;
                 }
         }
-driver::SERIAL0::stPrint(ARGSTR("Configuring:4\r\n"));
         // if we get here that means that the device class is not supported by any of registered classes
         rcode = DefaultAddressing(parent, port, lowspeed);
 

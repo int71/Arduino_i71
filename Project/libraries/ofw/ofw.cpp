@@ -59,6 +59,8 @@ VOID					OFW::stWait(
 			+stcdwnClockKHz/20
 			+stcdwnClockKHz/800
 			+stcdwnClockKHz/1600
+			+stcdwnClockKHz/3200
+			+stcdwnClockKHz/3200
 		);wicount++);
    }
    return;

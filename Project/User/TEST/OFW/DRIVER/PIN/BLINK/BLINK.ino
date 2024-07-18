@@ -2,14 +2,14 @@
 #include				<ofw.hpp>
 
 INT						main(VOID){
-	DDRB|=0x01;
+	DDRB|=0x10;
 	while(TRUE){
 		static BYTE			stbicounter=0;
 
-		if(stbicounter&1)PORTB|=0x01;
-		else PORTB&=~0x01;
+		if(stbicounter&1)PORTB|=0x10;
+		else PORTB&=~0x10;
 		++stbicounter;
-		OFW::stWait(250);
+		OFW::stWait(200);
 	}
 	return;
 }
