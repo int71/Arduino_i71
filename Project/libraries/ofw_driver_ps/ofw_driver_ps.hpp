@@ -62,6 +62,9 @@ namespace ofw{
 				IDTransition_NS_neGcon,
 				IDTransition_NS_DUALSHOCK,
 				IDTransition_HS_Initialize,
+				IDTransition_HS_SetDigital0,
+				IDTransition_HS_SetDigital1,
+				IDTransition_HS_SetDigital2,
 				IDTransition_HS_SetAnalog0,
 				IDTransition_HS_SetAnalog1,
 				IDTransition_HS_SetAnalog2,
@@ -273,8 +276,9 @@ namespace ofw{
 			READ					readThis;
 			BYTE					biMotorSLength;
 			BYTE					biMotorLLength;
+			BYTE					eAnalogLock:1;
 		public:
-			VOID					New(VOID);
+			VOID					New(BOOL eanaloglock=FALSE);
 			VOID					Delete(VOID);
 			VOID					Main(VOID);
 			INLINE IDTRANSITION		idGetTransition(VOID){
@@ -329,7 +333,7 @@ namespace ofw{
 				OFW::stWaitFine(8);
 				return;
 			}
-			VOID					New_Local(VOID);
+			VOID					New_Local(BOOL eanaloglock);
 			VOID					Delete_Local(VOID);
 			INLINE VOID				Read(LPCBYTE lpcbcommand,BYTE bncommand){
 				stRead((LPBYTE)&readThis,lpcbcommand,bncommand);

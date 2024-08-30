@@ -36,12 +36,25 @@ VOID					DS3FROMDIGITAL::stWrite(
 	stub::USB_HID_DS3::LPWRITE	lpwritedestination,
 	driver::PS::LPCREAD		lpcreadsource
 ){
+	auto					eup=lpcreadsource->DIGITAL.eButtonUp;
+	auto					eright=lpcreadsource->DIGITAL.eButtonRight;
+	auto					edown=lpcreadsource->DIGITAL.eButtonDown;
+	auto					eleft=lpcreadsource->DIGITAL.eButtonLeft;
+
+	if((!eup)&&(!edown)){
+		eup=TRUE;
+		edown=TRUE;
+	}
+	if((!eright)&&(!eleft)){
+		eright=TRUE;
+		eleft=TRUE;
+	}
 	lpwritedestination->eButtonSelect=		!lpcreadsource->DIGITAL.eButtonSelect;
 	lpwritedestination->eButtonStart=		!lpcreadsource->DIGITAL.eButtonStart;
-	lpwritedestination->eButtonUp=			!lpcreadsource->DIGITAL.eButtonUp;
-	lpwritedestination->eButtonRight=		!lpcreadsource->DIGITAL.eButtonRight;
-	lpwritedestination->eButtonDown=		!lpcreadsource->DIGITAL.eButtonDown;
-	lpwritedestination->eButtonLeft=		!lpcreadsource->DIGITAL.eButtonLeft;
+	lpwritedestination->eButtonUp=			!eup;
+	lpwritedestination->eButtonRight=		!eright;
+	lpwritedestination->eButtonDown=		!edown;
+	lpwritedestination->eButtonLeft=		!eleft;
 	lpwritedestination->eButtonL2=			!lpcreadsource->DIGITAL.eButtonL2;
 	lpwritedestination->eButtonR2=			!lpcreadsource->DIGITAL.eButtonR2;
 	lpwritedestination->eButtonL1=			!lpcreadsource->DIGITAL.eButtonL1;
@@ -50,10 +63,10 @@ VOID					DS3FROMDIGITAL::stWrite(
 	lpwritedestination->eButtonCircle=		!lpcreadsource->DIGITAL.eButtonCircle;
 	lpwritedestination->eButtonCross=		!lpcreadsource->DIGITAL.eButtonCross;
 	lpwritedestination->eButtonSquare=		!lpcreadsource->DIGITAL.eButtonSquare;
-	lpwritedestination->biButtonUp=			lpcreadsource->DIGITAL.eButtonUp?0x00:0xff;
-	lpwritedestination->biButtonRight=		lpcreadsource->DIGITAL.eButtonRight?0x00:0xff;
-	lpwritedestination->biButtonDown=		lpcreadsource->DIGITAL.eButtonDown?0x00:0xff;
-	lpwritedestination->biButtonLeft=		lpcreadsource->DIGITAL.eButtonLeft?0x00:0xff;
+	lpwritedestination->biButtonUp=			eup?0x00:0xff;
+	lpwritedestination->biButtonRight=		eright?0x00:0xff;
+	lpwritedestination->biButtonDown=		edown?0x00:0xff;
+	lpwritedestination->biButtonLeft=		eleft?0x00:0xff;
 	lpwritedestination->biButtonL2=			lpcreadsource->DIGITAL.eButtonL2?0x00:0xff;
 	lpwritedestination->biButtonR2=			lpcreadsource->DIGITAL.eButtonR2?0x00:0xff;
 	lpwritedestination->biButtonL1=			lpcreadsource->DIGITAL.eButtonL1?0x00:0xff;

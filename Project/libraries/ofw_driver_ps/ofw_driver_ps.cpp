@@ -28,10 +28,12 @@ PS::ST					PS::st;
 
 //	public
 
-VOID					PS::New(VOID){
+VOID					PS::New(
+	BOOL					eforcedigital
+){
 	st.bnInstance++;
 	if(st.bnInstance==1)stNew_Local();
-	New_Local();
+	New_Local(eforcedigital);
 	return;
 }
 
@@ -90,7 +92,10 @@ VOID					PS::Main(VOID){
 			Read(arbccommand,sizeof(arbccommand));
 			if(readThis.bcCheck==0x5a){
 				if(readThis.bcType==0x23)idTransition=IDTransition_NS_neGcon;
-				else idTransition=IDTransition_NS_SetAnalog0;
+				else{
+					if(eAnalogLock)idTransition=IDTransition_NS_SetAnalog0;
+					else idTransition=IDTransition_NS_Digital;
+				}
 				return;
 			}
 		}
@@ -131,6 +136,7 @@ VOID					PS::Main(VOID){
 			BYTE					arbccommand[]={0x44,0x00,0x01,0x03};
 
 			idDevice=IDDevice_NS_Initialize;
+			if(eAnalogLock)arbccommand[3]=0x00;
 			Read(arbccommand,sizeof(arbccommand));
 			if(readThis.bcCheck==0x5a){
 				idTransition=idTransition+1;
@@ -212,7 +218,56 @@ VOID					PS::Main(VOID){
 			stSetHS(TRUE);
 			Read(arbccommand,sizeof(arbccommand));
 			if(readThis.bcCheck==0x5a){
-				idTransition=IDTransition_HS_SetAnalog0;
+				if(eAnalogLock)idTransition=IDTransition_HS_SetAnalog0;
+				else idTransition=IDTransition_HS_Digital;
+				return;
+			}
+		}
+		break;
+	case IDTransition_HS_SetDigital0:
+		{
+			//	CONFIG_MODE_ENTER
+			//	CMD=01,43,00,01,00(,00,00,00,00)
+			//	DAT=--,ID,SS,XX,XX(,XX,XX,XX,XX)
+			BYTE					arbccommand[]={0x43,0x00,0x01};
+
+			idDevice=IDDevice_HS_Initialize;
+			stSetHS(TRUE);
+			Read(arbccommand,sizeof(arbccommand));
+			if((readThis.bcCheck==0x5a)||(readThis.bcCheck==0x00)){
+				idTransition=idTransition+1;
+				return;
+			}
+		}
+		break;
+	case IDTransition_HS_SetDigital1:
+		{
+			//	SET_MODE_AND_LOCK
+			//	CMD=01,44,00,XX,YY,00,00,00,00
+			//	DAT=--,F3,5A,00,00,00,00,00,00
+			BYTE					arbccommand[]={0x44,0x00,0x00,0x00};
+
+			idDevice=IDDevice_HS_Initialize;
+			stSetHS(TRUE);
+			Read(arbccommand,sizeof(arbccommand));
+			if(readThis.bcCheck==0x5a){
+				idTransition=idTransition+1;
+				return;
+			}
+		}
+		break;
+	case IDTransition_HS_SetDigital2:
+		{
+			//	CONFIG_MODE_EXIT
+			//	CMD=01,43,00,00,5A,5A,5A,5A,5A
+			//	DAT=FF,F3,5A,00,00,00,00,00,00
+			BYTE					arbccommand[]={0x43,0x00,0x00,0x5a,0x5a,0x5a,0x5a,0x5a};
+
+			idDevice=IDDevice_HS_Initialize;
+			stSetHS(TRUE);
+			Read(arbccommand,sizeof(arbccommand));
+			if(readThis.bcCheck==0x5a){
+				idTransition=IDTransition_HS_Digital;
 				return;
 			}
 		}
@@ -227,7 +282,7 @@ VOID					PS::Main(VOID){
 			idDevice=IDDevice_HS_Initialize;
 			stSetHS(TRUE);
 			Read(arbccommand,sizeof(arbccommand));
-			if(readThis.bcCheck==0x5a)idTransition=idTransition+1;
+			if((readThis.bcCheck==0x5a)||(readThis.bcCheck==0x00))idTransition=idTransition+1;
 			else idTransition=IDTransition_HS_Digital;
 			return;
 		}
@@ -253,9 +308,10 @@ VOID					PS::Main(VOID){
 			//	SET_MODE_AND_LOCK
 			//	CMD=01,44,00,XX,YY,00,00,00,00
 			//	DAT=--,F3,5A,00,00,00,00,00,00
-			BYTE					arbccommand[]={0x44,0x00,0x01,0x03};
+			BYTE					arbccommand[]={0x44,0x00,0x01,0x00};
 
 			idDevice=IDDevice_HS_Initialize;
+			if(eAnalogLock)arbccommand[3]=0x03;
 			stSetHS(TRUE);
 			Read(arbccommand,sizeof(arbccommand));
 			if(readThis.bcCheck==0x5a){
@@ -327,13 +383,17 @@ VOID					PS::Main(VOID){
 			stSetHS(TRUE);
 			Read(nullptr,0);
 			if(readThis.wcID==0x5a41)return;
+			else{
+				idTransition=IDTransition_HS_SetAnalog0;
+				return;
+			}
 		}
 		break;
 	case IDTransition_HS_neGconPlus:
 		{
 			//	READ_DATA
 			//	CMD=01,42,00,00,00
-			//	DAT=--,23,5A,XX,XX
+			//	DAT=--,A5,5A,XX,XX
 			idDevice=IDDevice_HS_neGconPlus;
 			stSetHS(TRUE);
 			Read(nullptr,0);
@@ -344,11 +404,15 @@ VOID					PS::Main(VOID){
 		{
 			//	READ_DATA_AND_VIBRATE_EX
 			//	CMD=01,42,00,WW,PP(,00,00,00,00)
-			//	DAT=--,ID,SS,XX,XX(,XX,XX,XX,XX)
+			//	DAT=--,79,5A,XX,XX(,XX,XX,XX,XX)
 			idDevice=IDDevice_HS_DUALSHOCK2;
 			stSetHS(TRUE);
 			Read(arbcCommand,sizeof(arbcCommand));
 			if(readThis.wcID==0x5a79)return;
+			else if(!eAnalogLock){
+				idTransition=IDTransition_HS_SetDigital0;
+				return;
+			}
 		}
 		break;
 	}
@@ -511,7 +575,9 @@ VOID					PS::stWaitClock(VOID){
 	return;
 }
 
-VOID					PS::New_Local(VOID){
+VOID					PS::New_Local(
+	BOOL					eanaloglock
+){
 	idTransition=IDTransition_None;
 	idDevice=IDDevice_None;
 	//	READ_DATA_AND_VIBRATE_EX
@@ -523,6 +589,7 @@ VOID					PS::New_Local(VOID){
 	arbcCommand[3]=0x00;
 	biMotorSLength=0x00;
 	biMotorLLength=0x00;
+	eAnalogLock=eanaloglock;
 	return;
 }
 

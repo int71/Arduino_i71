@@ -36,14 +36,31 @@ VOID					DS3FROMDUALSHOCK2::stWrite(
 	stub::USB_HID_DS3::LPWRITE	lpwritedestination,
 	driver::PS::LPCREAD		lpcreadsource
 ){
+	BYTE					biup=lpcreadsource->DUALSHOCK2.biButtonUp;
+	BYTE					biright=lpcreadsource->DUALSHOCK2.biButtonRight;
+	BYTE					bidown=lpcreadsource->DUALSHOCK2.biButtonDown;
+	BYTE					bileft=lpcreadsource->DUALSHOCK2.biButtonLeft;
+
+	if(biup<bidown)biup=0x00;
+	else if(bidown<biup)bidown=0x00;
+	else{
+		biup=0x00;
+		bidown=0x00;
+	}
+	if(biright<bileft)biright=0x00;
+	else if(bileft<biright)bileft=0x00;
+	else{
+		biright=0x00;
+		bileft=0x00;
+	}
 	lpwritedestination->eButtonSelect=		!lpcreadsource->DUALSHOCK2.eButtonSelect;
 	lpwritedestination->eButtonL3=			!lpcreadsource->DUALSHOCK2.eButtonL3;
 	lpwritedestination->eButtonR3=			!lpcreadsource->DUALSHOCK2.eButtonR3;
 	lpwritedestination->eButtonStart=		!lpcreadsource->DUALSHOCK2.eButtonStart;
-	lpwritedestination->eButtonUp=			(lpcreadsource->DUALSHOCK2.biButtonUp!=0);
-	lpwritedestination->eButtonRight=		(lpcreadsource->DUALSHOCK2.biButtonRight!=0);
-	lpwritedestination->eButtonDown=		(lpcreadsource->DUALSHOCK2.biButtonDown!=0);
-	lpwritedestination->eButtonLeft=		(lpcreadsource->DUALSHOCK2.biButtonLeft!=0);
+	lpwritedestination->eButtonUp=			(biup!=0);
+	lpwritedestination->eButtonRight=		(biright!=0);
+	lpwritedestination->eButtonDown=		(bidown!=0);
+	lpwritedestination->eButtonLeft=		(bileft!=0);
 	lpwritedestination->eButtonL2=			(lpcreadsource->DUALSHOCK2.biButtonL2!=0);
 	lpwritedestination->eButtonR2=			(lpcreadsource->DUALSHOCK2.biButtonR2!=0);
 	lpwritedestination->eButtonL1=			(lpcreadsource->DUALSHOCK2.biButtonL1!=0);
@@ -56,10 +73,10 @@ VOID					DS3FROMDUALSHOCK2::stWrite(
 	lpwritedestination->biAxisLY=			lpcreadsource->DUALSHOCK2.biAxisLY;
 	lpwritedestination->biAxisRX=			lpcreadsource->DUALSHOCK2.biAxisRX;
 	lpwritedestination->biAxisRY=			lpcreadsource->DUALSHOCK2.biAxisRY;
-	lpwritedestination->biButtonUp=			lpcreadsource->DUALSHOCK2.biButtonUp;
-	lpwritedestination->biButtonRight=		lpcreadsource->DUALSHOCK2.biButtonRight;
-	lpwritedestination->biButtonDown=		lpcreadsource->DUALSHOCK2.biButtonDown;
-	lpwritedestination->biButtonLeft=		lpcreadsource->DUALSHOCK2.biButtonLeft;
+	lpwritedestination->biButtonUp=			biup;
+	lpwritedestination->biButtonRight=		biright;
+	lpwritedestination->biButtonDown=		bidown;
+	lpwritedestination->biButtonLeft=		bileft;
 	lpwritedestination->biButtonL2=			lpcreadsource->DUALSHOCK2.biButtonL2;
 	lpwritedestination->biButtonR2=			lpcreadsource->DUALSHOCK2.biButtonR2;
 	lpwritedestination->biButtonL1=			lpcreadsource->DUALSHOCK2.biButtonL1;
